@@ -84,7 +84,7 @@ class Carteira extends StatelessWidget {
                 alignment: Alignment.center,
                 child: ClipOval(
                   child: Image.asset(
-                    "assets/images/avatarr.jpeg",
+                    "assets/images/avatarr.jpg",
                     width: 90,
                     height: 90,
                     fit: BoxFit.cover,
