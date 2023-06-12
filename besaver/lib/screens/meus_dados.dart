@@ -52,7 +52,7 @@ class MeusDados extends StatelessWidget {
                         shape: BoxShape.circle,
                         image: const DecorationImage(
                           fit: BoxFit.cover,
-                          image: AssetImage('assets/images/avatar.jpeg'),
+                          image: AssetImage('assets/images/avatarr.jpg'),
                         ),
                       ),
                     ),

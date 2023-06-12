@@ -63,7 +63,7 @@ class HomeProfileTab extends StatelessWidget {
                           borderRadius: const BorderRadius.all(
                               Radius.circular(defaultRadius)),
                           child: Image.asset(
-                            "assets/images/avatar.jpeg",
+                            "assets/images/avatarr.jpg",
                             width: 70,
                           ),
                         ),

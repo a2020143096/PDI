@@ -122,7 +122,7 @@ class HomeScreenTab extends StatelessWidget {
                 borderRadius: const BorderRadius.all(
                   Radius.circular(defaultRadius),
                 ),
-                child: Image.asset("assets/images/avatar.jpeg"),
+                child: Image.asset("assets/images/avatarr.jpg"),
               ),
               trailing: Image.asset("assets/icons/bell.png"),
             ),
