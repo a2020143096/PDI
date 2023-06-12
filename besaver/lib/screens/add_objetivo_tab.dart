@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../utils/constants.dart';
 
 class AddObjetivoTab extends StatefulWidget {
@@ -41,12 +40,8 @@ class _AddObjetivoTabState extends State<AddObjetivoTab> {
         'dataLimite': _dataLimite,
         'valorPoupar': double.parse(valorPoupar),
       });
-
-      // Limpar os campos após adicionar o objetivo
       _nomeController.clear();
       _valorPouparController.clear();
-
-      // Exibir uma mensagem de sucesso ou fazer outra ação desejada
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -106,8 +101,7 @@ class _AddObjetivoTabState extends State<AddObjetivoTab> {
           "Adicionar Objetivo de Poupança",
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor: const Color.fromARGB(
-            255, 87, 124, 89), // Definindo a cor de fundo da AppBar
+        backgroundColor: const Color.fromARGB(255, 87, 124, 89),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -115,7 +109,7 @@ class _AddObjetivoTabState extends State<AddObjetivoTab> {
             children: [
               Container(
                 padding: const EdgeInsets.all(20.0),
-                color: Colors.white, // Definindo a cor de fundo do container
+                color: Colors.white,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -124,8 +118,7 @@ class _AddObjetivoTabState extends State<AddObjetivoTab> {
                       style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(
-                            255, 87, 124, 89), // Definindo a cor do texto
+                        color: Color.fromARGB(255, 87, 124, 89),
                       ),
                     ),
                     const SizedBox(
@@ -135,7 +128,7 @@ class _AddObjetivoTabState extends State<AddObjetivoTab> {
                       controller: _nomeController,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: 'Digite o nome a dar ao objetivo',
+                        hintText: 'Nome a dar ao objetivo',
                       ),
                     ),
                     const SizedBox(height: 20.0),
@@ -144,8 +137,7 @@ class _AddObjetivoTabState extends State<AddObjetivoTab> {
                       style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(
-                            255, 87, 124, 89), // Definindo a cor do texto
+                        color: Color.fromARGB(255, 87, 124, 89),
                       ),
                     ),
                     const SizedBox(
@@ -185,8 +177,7 @@ class _AddObjetivoTabState extends State<AddObjetivoTab> {
                       style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
-                        color: Color.fromARGB(
-                            255, 87, 124, 89), // Definindo a cor do texto
+                        color: Color.fromARGB(255, 87, 124, 89),
                       ),
                     ),
                     const SizedBox(
@@ -197,7 +188,7 @@ class _AddObjetivoTabState extends State<AddObjetivoTab> {
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: 'Digite o valor a poupar',
+                        hintText: 'Valor a poupar',
                         prefix: Text('€'),
                       ),
                       validator: (value) {

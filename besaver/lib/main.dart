@@ -1,8 +1,6 @@
-import 'package:besaver/auth.dart';
 import 'package:besaver/screens/pinicial.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:besaver/widget_tree.dart';
 import 'package:besaver/screens/main_screen_home.dart';
 import 'package:flutter/material.dart';
 
@@ -19,7 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'BeSaver',
       theme: ThemeData(
         primarySwatch: Colors.green,
       ),
@@ -28,12 +26,12 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.data != null) {
-              return MainScreenHost();
+              return const MainScreenHost();
             } else {
-              return Pinicial();
+              return const Pinicial();
             }
           } else {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           }
         },
       ),

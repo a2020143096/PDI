@@ -18,8 +18,7 @@ class _NotificacoesState extends State<Notificacoes> {
         child: Padding(
           padding: const EdgeInsets.all(defaultSpacing),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment
-                .center, // Alinha os elementos ao centro horizontal
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(
                 height: defaultSpacing * 4,
@@ -49,7 +48,7 @@ class _NotificacoesState extends State<Notificacoes> {
                   fontWeight: FontWeight.bold,
                   color: Color.fromARGB(201, 56, 53, 53),
                 ),
-                textAlign: TextAlign.center, // Alinha o texto ao centro
+                textAlign: TextAlign.center,
               ),
               const SizedBox(height: 50),
               Container(
@@ -83,7 +82,7 @@ class _NotificacoesState extends State<Notificacoes> {
               if (isNotificationEnabled)
                 Container(
                   width: 500,
-                  child: TextField(
+                  child: const TextField(
                     decoration: InputDecoration(
                       labelText: 'Quando pretendes receber notificação?',
                       border: OutlineInputBorder(),

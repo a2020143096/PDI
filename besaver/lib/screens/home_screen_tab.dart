@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:besaver/data/userInfo.dart';
 import 'package:besaver/utils/constants.dart';
 import 'package:besaver/utils/widget/income_expense_card.dart';
@@ -28,15 +27,12 @@ class TransactionItemTile extends StatelessWidget {
     String valuePrefix;
     Color textColor;
     if (transaction.reference.parent.id == 'despesas') {
-      // Valor vindo da coleção "despesas"
       valuePrefix = "-€ ";
       textColor = Colors.red;
     } else if (transaction.reference.parent.id == 'rendimentos') {
-      // Valor vindo da coleção "rendimentos"
       valuePrefix = "+€ ";
       textColor = Colors.green;
     } else {
-      // Outras coleções (se aplicável)
       valuePrefix = "€ ";
       textColor = Theme.of(context).textTheme.bodyText1?.color ?? Colors.black;
     }
@@ -186,7 +182,7 @@ class HomeScreenTab extends StatelessWidget {
               future: fetchTransactionsFromFirestore(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 } else if (snapshot.hasData) {
                   final List<QueryDocumentSnapshot> transactions =
                       snapshot.data!;
@@ -200,7 +196,7 @@ class HomeScreenTab extends StatelessWidget {
                         .toList(),
                   );
                 } else {
-                  return Text('Erro ao carregar os dados');
+                  return const Text('Erro ao carregar os dados');
                 }
               },
             ),

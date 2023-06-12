@@ -1,6 +1,5 @@
 import 'package:besaver/screens/Login.dart';
 import 'package:besaver/screens/Registo.dart';
-import 'package:besaver/screens/login_register_page.dart';
 import 'package:flutter/material.dart';
 
 class Pinicial extends StatelessWidget {
@@ -35,11 +34,11 @@ class Pinicial extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Login()),
+                    MaterialPageRoute(builder: (context) => const Login()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 107, 174, 110),
+                  backgroundColor: const Color.fromARGB(255, 107, 174, 110),
                   foregroundColor: Colors.white,
                   minimumSize: const Size(150, 50),
                   padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -62,11 +61,11 @@ class Pinicial extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Registo()),
+                    MaterialPageRoute(builder: (context) => const Registo()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 87, 124, 89),
+                  backgroundColor: const Color.fromARGB(255, 87, 124, 89),
                   foregroundColor: Colors.white,
                   minimumSize: const Size(150, 50),
                   padding: const EdgeInsets.symmetric(horizontal: 20),

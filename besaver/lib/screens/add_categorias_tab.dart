@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:numberpicker/numberpicker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-
 import '../utils/constants.dart';
-import 'package:besaver/screens/main_screen_home.dart';
 
 class AddCategoriasTab extends StatefulWidget {
   const AddCategoriasTab({Key? key}) : super(key: key);
@@ -21,15 +18,15 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 87, 124, 89),
+        backgroundColor: const Color.fromARGB(255, 87, 124, 89),
         leading: IconButton(
-          icon: Icon(Icons.close),
+          icon: const Icon(Icons.close),
           color: Colors.white,
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
-        title: Text(
+        title: const Text(
           'Categorias',
           style: TextStyle(
             fontSize: 20.0,
@@ -46,7 +43,7 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
               Container(
                 color: Colors.black.withOpacity(0.1),
                 height: 1.5,
-                margin: EdgeInsets.symmetric(horizontal: 20.0),
+                margin: const EdgeInsets.symmetric(horizontal: 20.0),
               ),
               StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
@@ -56,7 +53,7 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
                   if (snapshot.hasData) {
                     return ListView.builder(
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       itemCount: snapshot.data!.docs.length,
                       itemBuilder: (context, index) {
                         var categoria = snapshot.data!.docs[index].data()
@@ -69,18 +66,18 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
 
                           return ListTile(
                             leading: Container(
-                              padding: EdgeInsets.all(defaultSpacing / 2),
-                              decoration: BoxDecoration(
+                              padding: const EdgeInsets.all(defaultSpacing / 2),
+                              decoration: const BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.all(
                                   Radius.circular(defaultRadius / 2),
                                 ),
                               ),
-                              child: Icon(Icons.house),
+                              child: const Icon(Icons.house),
                             ),
                             title: Text(
                               categoria['nome'] as String,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: fontHeading,
                                 fontSize: fontSizeTitle,
                                 fontWeight: FontWeight.w700,
@@ -89,23 +86,23 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
                             subtitle: Text(valor),
                           );
                         } else {
-                          return SizedBox.shrink();
+                          return const SizedBox.shrink();
                         }
                       },
                     );
                   } else {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   }
                 },
               ),
-              SizedBox(height: 17.0),
+              const SizedBox(height: 17.0),
               Container(
                 color: Colors.black.withOpacity(0.1),
                 height: 1.5,
-                margin: EdgeInsets.symmetric(horizontal: 20.0),
+                margin: const EdgeInsets.symmetric(horizontal: 20.0),
               ),
-              SizedBox(height: 15),
-              Padding(
+              const SizedBox(height: 15),
+              const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20.0),
                 child: Text(
                   'Adicionar nova categoria',
@@ -116,19 +113,19 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Color.fromARGB(255, 237, 236, 236),
+                    color: const Color.fromARGB(255, 237, 236, 236),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: TextFormField(
                     controller: nomeCategoriaController,
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(
+                      contentPadding: const EdgeInsets.symmetric(
                         vertical: 15.0,
                         horizontal: 20.0,
                       ),
@@ -138,9 +135,9 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
                   children: [
                     Checkbox(
@@ -151,8 +148,8 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
                         });
                       },
                     ),
-                    SizedBox(width: 10.0),
-                    Text(
+                    const SizedBox(width: 10.0),
+                    const Text(
                       'Limite',
                       style: TextStyle(
                         fontSize: 17.0,
@@ -160,13 +157,13 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
                       ),
                     ),
                     if (hasLimit) ...[
-                      SizedBox(width: 10.0),
+                      const SizedBox(width: 10.0),
                       GestureDetector(
                         onTap: () {
                           showPicker();
                         },
                         child: Container(
-                          padding: EdgeInsets.symmetric(
+                          padding: const EdgeInsets.symmetric(
                             horizontal: 10.0,
                             vertical: 6.0,
                           ),
@@ -176,7 +173,7 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
                           ),
                           child: Text(
                             valorLimite.toString(),
-                            style: TextStyle(fontSize: 16.0),
+                            style: const TextStyle(fontSize: 16.0),
                           ),
                         ),
                       ),
@@ -184,27 +181,27 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
                   ],
                 ),
               ),
-              SizedBox(height: 17.0),
+              const SizedBox(height: 17.0),
               Container(
                 color: Colors.black.withOpacity(0.1),
                 height: 1.5,
-                margin: EdgeInsets.symmetric(horizontal: 20.0),
+                margin: const EdgeInsets.symmetric(horizontal: 20.0),
               ),
-              SizedBox(height: 15),
+              const SizedBox(height: 15),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
                     onPressed: registrarCategoria,
                     style: ElevatedButton.styleFrom(
-                      primary: Color.fromARGB(255, 87, 124, 89),
-                      textStyle: TextStyle(fontSize: 20.0),
-                      padding: EdgeInsets.symmetric(
+                      primary: const Color.fromARGB(255, 87, 124, 89),
+                      textStyle: const TextStyle(fontSize: 20.0),
+                      padding: const EdgeInsets.symmetric(
                         horizontal: 40.0,
                         vertical: 15.0,
                       ),
                     ),
-                    child: Text('Adicionar'),
+                    child: const Text('Adicionar'),
                   ),
                 ],
               ),
@@ -222,14 +219,14 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
         TextEditingController textController =
             TextEditingController(text: valorLimite.toString());
         return AlertDialog(
-          title: Text('Escolha o Valor Limite'),
+          title: const Text('Escolha o Valor Limite'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: textController,
                 keyboardType: TextInputType.number,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Valor Limite',
                   border: OutlineInputBorder(),
                 ),
@@ -244,7 +241,7 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
                 });
                 Navigator.of(context).pop();
               },
-              child: Text('Confirmar'),
+              child: const Text('Confirmar'),
             ),
           ],
         );

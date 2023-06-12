@@ -1,5 +1,3 @@
-import 'package:besaver/screens/meus_dados.dart';
-import 'package:besaver/screens/pinicial.dart';
 import 'package:flutter/material.dart';
 
 class MeusDados extends StatelessWidget {
@@ -79,7 +77,7 @@ class MeusDados extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 237, 236, 236),
+                        color: const Color.fromARGB(255, 237, 236, 236),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextFormField(
@@ -111,7 +109,7 @@ class MeusDados extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 237, 236, 236),
+                        color: const Color.fromARGB(255, 237, 236, 236),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextFormField(
@@ -143,7 +141,7 @@ class MeusDados extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 237, 236, 236),
+                        color: const Color.fromARGB(255, 237, 236, 236),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextFormField(

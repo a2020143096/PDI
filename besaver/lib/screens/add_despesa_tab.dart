@@ -31,10 +31,7 @@ class _AddDespesaTabState extends State<AddDespesaTab> {
     final snapshot = await _firestore.collection('categorias').get();
     final List<String> fetchedCategorias =
         snapshot.docs.map((doc) => doc.get('nome') as String).toList();
-
-    // Remover itens duplicados da lista de categorias
     categorias = fetchedCategorias.toSet().toList();
-
     setState(() {
       selectedCategoria =
           fetchedCategorias.isNotEmpty ? fetchedCategorias[0] : null;
@@ -54,8 +51,6 @@ class _AddDespesaTabState extends State<AddDespesaTab> {
         'descricao': descricao,
         'fixa': isFixa,
       });
-
-      // Limpar os campos após adicionar a despesa
       _valorController.clear();
       _descricaoController.clear();
       setState(() {

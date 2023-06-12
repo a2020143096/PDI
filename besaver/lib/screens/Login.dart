@@ -85,7 +85,7 @@ class LoginState extends State<Login> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -100,7 +100,7 @@ class LoginState extends State<Login> {
               children: [
                 const SizedBox(height: 0.5),
                 Container(
-                  color: Color.fromARGB(255, 244, 244, 244),
+                  color: const Color.fromARGB(255, 244, 244, 244),
                   padding: const EdgeInsets.all(20),
                   child: const Align(
                     alignment: Alignment.center,
@@ -154,7 +154,7 @@ class LoginState extends State<Login> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 237, 236, 236),
+                          color: const Color.fromARGB(255, 237, 236, 236),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextFormField(
@@ -187,7 +187,7 @@ class LoginState extends State<Login> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 237, 236, 236),
+                          color: const Color.fromARGB(255, 237, 236, 236),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: TextFormField(
@@ -203,14 +203,15 @@ class LoginState extends State<Login> {
                 ),
                 Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(25),
+                  padding: const EdgeInsets.all(25),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       ElevatedButton(
                         onPressed: signInWithEmailAndPassword,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromARGB(255, 87, 124, 89),
+                          backgroundColor:
+                              const Color.fromARGB(255, 87, 124, 89),
                           foregroundColor: Colors.white,
                           minimumSize: const Size(double.infinity, 40),
                         ),

@@ -1,9 +1,5 @@
 import 'package:besaver/screens/ajuda.dart';
 import 'package:besaver/screens/editar_perfil.dart';
-import 'package:besaver/screens/add_categorias_tab.dart';
-import 'package:besaver/screens/carteira.dart';
-import 'package:besaver/screens/editar.dart';
-import 'package:besaver/screens/login_register_page.dart';
 import 'package:besaver/screens/meus_dados.dart';
 import 'package:besaver/screens/notificacao.dart';
 import 'package:besaver/screens/pinicial.dart';
@@ -19,21 +15,21 @@ class HomeProfileTab extends StatelessWidget {
       BuildContext context, String heading) {
     if (heading == "Meus Dados") {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => MeusDados()));
+          context, MaterialPageRoute(builder: (context) => const MeusDados()));
     } else if (heading == "Notificações") {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => Notificacoes()));
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const Notificacoes()));
     } else if (heading == "Ajuda") {
       Navigator.push(context, MaterialPageRoute(builder: (context) => Ajuda()));
     } else if (heading == "Terminar sessão") {
       FirebaseAuth.instance.signOut().then((_) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (context) => Pinicial()),
+          MaterialPageRoute(builder: (context) => const Pinicial()),
           (Route<dynamic> route) => false,
         );
       }).catchError((error) {
-        print("Erro durante o logout: $error");
+        print("Erro durante a terminar sessão: $error");
       });
     }
   }
@@ -91,10 +87,10 @@ class HomeProfileTab extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => EditarPerfil()),
+                                  builder: (context) => const EditarPerfil()),
                             );
                           },
-                          child: Chip(
+                          child: const Chip(
                             backgroundColor: Color.fromARGB(255, 87, 124, 89),
                             label: Text(
                               "Editar Perfil",
@@ -116,12 +112,14 @@ class HomeProfileTab extends StatelessWidget {
                         padding: const EdgeInsets.only(left: defaultSpacing),
                         child: Text(
                           "Conta",
-                          style:
-                              Theme.of(context).textTheme.subtitle1?.copyWith(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 87, 124, 89),
-                                  ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .subtitle1
+                              ?.copyWith(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: const Color.fromARGB(255, 87, 124, 89),
+                              ),
                         ),
                       ),
                       const SizedBox(

@@ -1,6 +1,5 @@
 import 'package:besaver/screens/main_screen_home.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:besaver/auth.dart';
 import 'package:flutter/material.dart';
 
 class Registo extends StatefulWidget {
@@ -40,7 +39,7 @@ class RegistoState extends State<Registo> {
       onPressed: () {
         createUserWithEmailAndPassword();
       },
-      child: Text('Registar'),
+      child: const Text('Registar'),
     );
   }
 
@@ -51,7 +50,7 @@ class RegistoState extends State<Registo> {
           isLogin = !isLogin;
         });
       },
-      child: Text('Fazer registo'),
+      child: const Text('Fazer registo'),
     );
   }
 
@@ -60,7 +59,7 @@ class RegistoState extends State<Registo> {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -73,9 +72,8 @@ class RegistoState extends State<Registo> {
           children: [
             const SizedBox(height: 0.5),
             Container(
-              color: Color.fromARGB(255, 244, 244, 244), // Cor de fundo cinza
-              padding:
-                  const EdgeInsets.all(20), // Espaçamento interno para a imagem
+              color: const Color.fromARGB(255, 244, 244, 244),
+              padding: const EdgeInsets.all(20),
               child: const Align(
                 alignment: Alignment.center,
                 child: Image(
@@ -128,7 +126,7 @@ class RegistoState extends State<Registo> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 237, 236, 236),
+                      color: const Color.fromARGB(255, 237, 236, 236),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextFormField(
@@ -160,7 +158,7 @@ class RegistoState extends State<Registo> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 237, 236, 236),
+                      color: const Color.fromARGB(255, 237, 236, 236),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextFormField(
@@ -193,7 +191,7 @@ class RegistoState extends State<Registo> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 237, 236, 236),
+                      color: const Color.fromARGB(255, 237, 236, 236),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextFormField(
@@ -226,7 +224,7 @@ class RegistoState extends State<Registo> {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 237, 236, 236),
+                      color: const Color.fromARGB(255, 237, 236, 236),
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextFormField(
@@ -250,14 +248,14 @@ class RegistoState extends State<Registo> {
             ),
             Container(
               width: double.infinity,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   _submitButton(),
                   const SizedBox(height: 10),
                   const Text(
-                    'Já tens conta? Login!',
+                    'Já tens conta? Faz Login!',
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.black,

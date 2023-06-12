@@ -40,7 +40,7 @@ class Ajuda extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               const Text(
-                "A BeSaver foi criada com o objetivo de auxiliar na gestão das suas despesas e ajudá-lo(a) a economizar dinheiro. Aqui pode questionar todas as suas dúvidas, que nós tentamos responder o mais rápido possível.",
+                "A BeSaver foi criada com o objetivo de te ajudar a gerir as tuas despesas e a poupar dinheiro. Aqui podes questionar todas as tuas dúvidas, nós tentamos responder o mais rápido possível.",
                 style: TextStyle(
                   fontSize: 17.0,
                   fontWeight: FontWeight.bold,
@@ -55,7 +55,7 @@ class Ajuda extends StatelessWidget {
               ),
               const SizedBox(height: 30),
               const Text(
-                "Envie as suas questões!",
+                "Envia as tuas questões!",
                 style: TextStyle(
                   fontSize: 20.0,
                   fontWeight: FontWeight.bold,
@@ -73,7 +73,7 @@ class Ajuda extends StatelessWidget {
                   controller: emailController,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
-                    hintText: 'Insira o seu email',
+                    hintText: 'Insere o teu email',
                   ),
                 ),
               ),
@@ -89,7 +89,7 @@ class Ajuda extends StatelessWidget {
                   controller: questionController,
                   decoration: const InputDecoration(
                     border: InputBorder.none,
-                    hintText: 'Coloque aqui a sua questão',
+                    hintText: 'Coloca aqui a tua questão',
                   ),
                   maxLines: 8,
                   maxLength: 400,

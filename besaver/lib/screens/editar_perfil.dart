@@ -1,4 +1,3 @@
-import 'package:besaver/screens/meus_dados.dart';
 import 'package:besaver/screens/pinicial.dart';
 import 'package:flutter/material.dart';
 
@@ -13,7 +12,7 @@ class EditarPerfil extends StatelessWidget {
         title: const Text(
           'Editar Perfil',
           style: TextStyle(
-            color: Colors.black, // Define a cor do texto como preto
+            color: Colors.black,
           ),
         ),
         leading: IconButton(

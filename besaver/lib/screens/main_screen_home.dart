@@ -3,7 +3,6 @@ import 'package:besaver/screens/home_add_tab.dart';
 import 'package:besaver/screens/home_profile_tab.dart';
 import 'package:besaver/screens/home_screen_tab.dart';
 import 'package:flutter/material.dart';
-import 'package:besaver/utils/constants.dart';
 
 class MainScreenHost extends StatefulWidget {
   const MainScreenHost({Key? key}) : super(key: key);
@@ -43,24 +42,21 @@ class MainScreenHostState extends State<MainScreenHost> {
             currentIndex = index;
           });
         },
-        backgroundColor: Color.fromARGB(255, 87, 124,
-            89), // Definindo a cor de fundo do BottomNavigationBar como verde
-        selectedItemColor: Color.fromARGB(255, 87, 124,
-            89), // Definindo a cor do ícone selecionado como preto
-        unselectedItemColor: Color.fromARGB(255, 87, 124,
-            89), // Definindo a cor do ícone não selecionado como preto
+        backgroundColor: const Color.fromARGB(255, 87, 124, 89),
+        selectedItemColor: const Color.fromARGB(255, 87, 124, 89),
+        unselectedItemColor: const Color.fromARGB(255, 87, 124, 89),
         items: [
           BottomNavigationBarItem(
             icon: Image.asset(
               "assets/icons/home-1.png",
-              color: Color.fromARGB(255, 87, 124, 89),
+              color: const Color.fromARGB(255, 87, 124, 89),
             ),
             label: "Início",
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               "assets/icons/chart-vertical.png",
-              color: Color.fromARGB(255, 87, 124, 89),
+              color: const Color.fromARGB(255, 87, 124, 89),
             ),
             label: "Estatísticas",
           ),
@@ -73,14 +69,14 @@ class MainScreenHostState extends State<MainScreenHost> {
           BottomNavigationBarItem(
             icon: Image.asset(
               "assets/icons/wallet.png",
-              color: Color.fromARGB(255, 87, 124, 89),
+              color: const Color.fromARGB(255, 87, 124, 89),
             ),
             label: "Carteira",
           ),
           BottomNavigationBarItem(
             icon: Image.asset(
               "assets/icons/user-1.png",
-              color: Color.fromARGB(255, 87, 124, 89),
+              color: const Color.fromARGB(255, 87, 124, 89),
             ),
             label: "Perfil",
           ),

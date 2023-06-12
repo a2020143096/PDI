@@ -27,14 +27,14 @@ class GeneralAccountInfoTile extends StatelessWidget {
         style: Theme.of(context)
             .textTheme
             .subtitle2
-            ?.copyWith(color: Color.fromARGB(255, 87, 124, 89)),
+            ?.copyWith(color: const Color.fromARGB(255, 87, 124, 89)),
       ),
       subtitle: Text(
         subTitle,
         style: Theme.of(context)
             .textTheme
             .bodyText2
-            ?.copyWith(color: Color.fromARGB(255, 87, 124, 89)),
+            ?.copyWith(color: const Color.fromARGB(255, 87, 124, 89)),
       ),
       trailing: const Icon(
         Icons.keyboard_arrow_right_rounded,
@@ -64,7 +64,8 @@ class ProfileAccountInfoTile extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: defaultSpacing),
             child: Text(heading,
                 style: Theme.of(context).textTheme.subtitle2?.copyWith(
-                    color: Color.fromARGB(255, 87, 124, 89), fontSize: 20)),
+                    color: const Color.fromARGB(255, 87, 124, 89),
+                    fontSize: 20)),
           ),
           const Expanded(
               flex: 1,
