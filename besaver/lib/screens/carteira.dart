@@ -1,8 +1,8 @@
 import 'package:besaver/screens/editar.dart';
 import 'package:besaver/utils/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../data/userInfo.dart';
 
 class Transaction {
   final String categoria;
@@ -20,27 +20,32 @@ class Carteira extends StatelessWidget {
   const Carteira({Key? key}) : super(key: key);
 
   Future<List<QueryDocumentSnapshot>> fetchTransactionsFromFirestore() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
     final QuerySnapshot<Map<String, dynamic>> variaveisRendimentosSnapshot =
         await FirebaseFirestore.instance
             .collection('rendimentos')
+            .where('userId', isEqualTo: userId)
             .where('fixa', isEqualTo: false)
             .get();
 
     final QuerySnapshot<Map<String, dynamic>> variaveisDespesasSnapshot =
         await FirebaseFirestore.instance
             .collection('despesas')
+            .where('userId', isEqualTo: userId)
             .where('fixa', isEqualTo: false)
             .get();
 
     final QuerySnapshot<Map<String, dynamic>> fixasRendimentosSnapshot =
         await FirebaseFirestore.instance
             .collection('rendimentos')
+            .where('userId', isEqualTo: userId)
             .where('fixa', isEqualTo: true)
             .get();
 
     final QuerySnapshot<Map<String, dynamic>> fixasDespesasSnapshot =
         await FirebaseFirestore.instance
             .collection('despesas')
+            .where('userId', isEqualTo: userId)
             .where('fixa', isEqualTo: true)
             .get();
 
@@ -80,7 +85,7 @@ class Carteira extends StatelessWidget {
               const SizedBox(
                 height: defaultSpacing,
               ),
-              Align(
+              /*Align(
                 alignment: Alignment.center,
                 child: ClipOval(
                   child: Image.asset(
@@ -90,7 +95,7 @@ class Carteira extends StatelessWidget {
                     fit: BoxFit.cover,
                   ),
                 ),
-              ),
+              ),*/
               const SizedBox(
                 height: defaultSpacing,
               ),
@@ -104,13 +109,13 @@ class Carteira extends StatelessWidget {
                           .bodyText1
                           ?.copyWith(color: fontSubHeading),
                     ),
-                    Text(
-                      "\€ ${userdata.totalBalance}",
+                    /*Text(
+                     "\€ ${userdata.total}",
                       style: Theme.of(context).textTheme.headline4?.copyWith(
                             fontSize: fontSizeHeading,
                             fontWeight: FontWeight.w800,
                           ),
-                    ),
+                    ),*/
                     const SizedBox(
                       height: defaultSpacing / 2,
                     ),

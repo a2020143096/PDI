@@ -1,8 +1,7 @@
 import 'package:besaver/utils/constants.dart';
 import 'package:flutter/material.dart';
 
-
-class ExpenseData{
+class ExpenseData {
   final String label;
   final String amount;
   final IconData icon;
@@ -11,10 +10,10 @@ class ExpenseData{
 }
 
 class IncomeExpenseCard extends StatelessWidget {
-
   final ExpenseData expenseData;
 
-  const IncomeExpenseCard({key, required this.expenseData}) : super(key: key);
+  const IncomeExpenseCard({Key? key, required this.expenseData})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,9 +21,15 @@ class IncomeExpenseCard extends StatelessWidget {
       height: 80,
       padding: const EdgeInsets.all(defaultSpacing),
       decoration: BoxDecoration(
-        boxShadow: const [BoxShadow(color: Colors.black12, offset: Offset.zero, spreadRadius: 3, blurRadius: 12)],
-        color: expenseData.label == "Ganhos" ? primaryDark : accent, 
-        borderRadius: const BorderRadius.all(Radius.circular(defaultRadius))),
+          boxShadow: const [
+            BoxShadow(
+                color: Colors.black12,
+                offset: Offset.zero,
+                spreadRadius: 3,
+                blurRadius: 12)
+          ],
+          color: expenseData.label == "Ganhos" ? primaryDark : accent,
+          borderRadius: const BorderRadius.all(Radius.circular(defaultRadius))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -33,20 +38,27 @@ class IncomeExpenseCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  expenseData.label, 
-                  style: Theme.of(context).textTheme.bodyText1?.copyWith(color: Colors.white),
-                ), 
+                  expenseData.label,
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyText1
+                      ?.copyWith(color: Colors.white),
+                ),
                 Padding(
                   padding: const EdgeInsets.only(top: defaultSpacing / 3),
                   child: Text(
-                    expenseData.amount, 
+                    expenseData.amount,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: Colors.white, fontWeight: FontWeight.w600),),
+                        color: Colors.white, fontWeight: FontWeight.w600),
+                  ),
                 )
-                  ],
+              ],
             ),
           ),
-         Icon(expenseData.icon, color: Colors.white,)
+          Icon(
+            expenseData.icon,
+            color: Colors.white,
+          )
         ],
       ),
     );

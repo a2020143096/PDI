@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class AddDespesaTab extends StatefulWidget {
   const AddDespesaTab({Key? key}) : super(key: key);
@@ -28,21 +29,34 @@ class _AddDespesaTabState extends State<AddDespesaTab> {
   }
 
   Future<void> fetchCategorias() async {
-    final snapshot = await _firestore.collection('categorias').get();
-    final List<String> fetchedCategorias =
-        snapshot.docs.map((doc) => doc.get('nome') as String).toList();
-    categorias = fetchedCategorias.toSet().toList();
-    setState(() {
-      selectedCategoria =
-          fetchedCategorias.isNotEmpty ? fetchedCategorias[0] : null;
-    });
+    final User? user = FirebaseAuth.instance.currentUser;
+    final String? uid = user?.uid;
+
+    if (uid != null) {
+      final snapshot = await _firestore
+          .collection('categorias')
+          .where('userId', isEqualTo: uid)
+          .get();
+      final List<String> fetchedCategorias =
+          snapshot.docs.map((doc) => doc.get('nome') as String).toList();
+      setState(() {
+        categorias = fetchedCategorias.toSet().toList();
+        selectedCategoria =
+            fetchedCategorias.isNotEmpty ? fetchedCategorias[0] : null;
+      });
+    }
   }
 
   Future<void> adicionarDespesa() async {
     final String? valor = _valorController.text;
     final String? descricao = _descricaoController.text;
+    final User? user = FirebaseAuth.instance.currentUser;
+    final String? uid = user?.uid;
 
-    if (selectedCategoria != null && valor != null && descricao != null) {
+    if (selectedCategoria != null &&
+        valor != null &&
+        descricao != null &&
+        uid != null) {
       final String collectionName =
           selectedTipo == 'Rendimento' ? 'rendimentos' : 'despesas';
       await _firestore.collection(collectionName).add({
@@ -50,6 +64,7 @@ class _AddDespesaTabState extends State<AddDespesaTab> {
         'valor': valor,
         'descricao': descricao,
         'fixa': isFixa,
+        'userId': uid,
       });
       _valorController.clear();
       _descricaoController.clear();
@@ -67,7 +82,7 @@ class _AddDespesaTabState extends State<AddDespesaTab> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Adicionar Despesa/Rendimento'),
-          backgroundColor: Color.fromARGB(255, 87, 124, 89),
+          backgroundColor: const Color.fromARGB(255, 87, 124, 89),
         ),
         body: SafeArea(
           child: SingleChildScrollView(
@@ -165,7 +180,7 @@ class _AddDespesaTabState extends State<AddDespesaTab> {
                           selectedTipo = value;
                         });
                       },
-                      activeColor: Color.fromARGB(255, 87, 124, 89),
+                      activeColor: const Color.fromARGB(255, 87, 124, 89),
                     ),
                     RadioListTile<String>(
                       title: const Text('Despesa'),
@@ -176,7 +191,7 @@ class _AddDespesaTabState extends State<AddDespesaTab> {
                           selectedTipo = value;
                         });
                       },
-                      activeColor: Color.fromARGB(255, 87, 124, 89),
+                      activeColor: const Color.fromARGB(255, 87, 124, 89),
                     ),
                     const SizedBox(height: 20.0),
                     const Text(
@@ -192,7 +207,7 @@ class _AddDespesaTabState extends State<AddDespesaTab> {
                         });
                       },
                       controlAffinity: ListTileControlAffinity.trailing,
-                      activeColor: Color.fromARGB(255, 87, 124, 89),
+                      activeColor: const Color.fromARGB(255, 87, 124, 89),
                     ),
                     const SizedBox(height: 20.0),
                     Center(
@@ -204,7 +219,7 @@ class _AddDespesaTabState extends State<AddDespesaTab> {
                         },
                         child: const Text('Adicionar'),
                         style: ElevatedButton.styleFrom(
-                          primary: Color.fromARGB(255, 87, 124, 89),
+                          primary: const Color.fromARGB(255, 87, 124, 89),
                           onPrimary: Colors.white,
                           padding: const EdgeInsets.symmetric(
                             horizontal: 40.0,

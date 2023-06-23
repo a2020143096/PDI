@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../utils/constants.dart';
@@ -48,6 +49,8 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
               StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('categorias')
+                    .where('userId',
+                        isEqualTo: FirebaseAuth.instance.currentUser?.uid)
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
@@ -259,17 +262,23 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
           valor = valorLimite.toDouble();
         }
 
-        await FirebaseFirestore.instance.collection('categorias').add({
-          'nome': nomeCategoria,
-          'valor': valor,
-          'hasLimit': hasLimit,
-        });
+        final User? user = FirebaseAuth.instance.currentUser;
+        final String? uid = user?.uid;
 
-        nomeCategoriaController.clear();
-        setState(() {
-          hasLimit = false;
-          valorLimite = 0;
-        });
+        if (uid != null) {
+          await FirebaseFirestore.instance.collection('categorias').add({
+            'nome': nomeCategoria,
+            'valor': valor,
+            'hasLimit': hasLimit,
+            'userId': uid,
+          });
+
+          nomeCategoriaController.clear();
+          setState(() {
+            hasLimit = false;
+            valorLimite = 0;
+          });
+        }
       } catch (error) {
         print('Erro ao adicionar categoria: $error');
       }

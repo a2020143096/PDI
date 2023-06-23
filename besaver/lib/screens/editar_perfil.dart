@@ -1,8 +1,73 @@
-import 'package:besaver/screens/pinicial.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class EditarPerfil extends StatelessWidget {
+class EditarPerfil extends StatefulWidget {
   const EditarPerfil({Key? key}) : super(key: key);
+
+  @override
+  _EditarPerfilState createState() => _EditarPerfilState();
+}
+
+class _EditarPerfilState extends State<EditarPerfil> {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  TextEditingController _nomeController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Carrega os dados do Firestore ao iniciar a página
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    try {
+      String? userId = _firebaseAuth.currentUser?.uid;
+      final userDoc = await FirebaseFirestore.instance
+          .collection('utilizador')
+          .doc(userId)
+          .get();
+      final userData =
+          userDoc.data() as Map<String, dynamic>; // Conversão explícita
+      setState(() {
+        _nomeController.text = userData['nome'];
+        _emailController.text = userData['email'];
+      });
+    } catch (error) {
+      print('Erro ao carregar dados do usuário: $error');
+    }
+  }
+
+  Future<void> _saveUserData() async {
+    try {
+      String? userId = _firebaseAuth.currentUser?.uid;
+      final newData = {
+        'nome': _nomeController.text,
+      };
+
+      await FirebaseFirestore.instance
+          .collection('utilizador')
+          .doc(userId)
+          .update(newData);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Dados atualizados com sucesso')),
+      );
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Erro ao atualizar dados')),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _nomeController.dispose();
+    _emailController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,10 +163,11 @@ class EditarPerfil extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 237, 236, 236),
+                        color: const Color.fromARGB(255, 237, 236, 236),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextFormField(
+                        controller: _nomeController,
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                           hintText: 'Nome',
@@ -130,13 +196,15 @@ class EditarPerfil extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 237, 236, 236),
+                        color: const Color.fromARGB(255, 237, 236, 236),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextFormField(
-                        decoration: const InputDecoration(
+                        controller: _emailController,
+                        enabled: false, // Impede a edição do campo de e-mail
+                        decoration: InputDecoration(
                           border: InputBorder.none,
-                          hintText: 'Escreve o teu email',
+                          hintText: _emailController.text,
                         ),
                       ),
                     ),
@@ -162,7 +230,7 @@ class EditarPerfil extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 237, 236, 236),
+                        color: const Color.fromARGB(255, 237, 236, 236),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextFormField(
@@ -194,7 +262,7 @@ class EditarPerfil extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 237, 236, 236),
+                        color: const Color.fromARGB(255, 237, 236, 236),
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextFormField(
@@ -215,14 +283,9 @@ class EditarPerfil extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Pinicial()),
-                        );
-                      },
+                      onPressed: _saveUserData,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(255, 87, 124, 89),
+                        backgroundColor: const Color.fromARGB(255, 87, 124, 89),
                         foregroundColor: Colors.white,
                         minimumSize: const Size(double.infinity, 40),
                       ),

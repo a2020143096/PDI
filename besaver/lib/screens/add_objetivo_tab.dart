@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../utils/constants.dart';
 
 class AddObjetivoTab extends StatefulWidget {
@@ -15,6 +16,7 @@ class _AddObjetivoTabState extends State<AddObjetivoTab> {
   late TextEditingController _valorPouparController;
   DateTime _dataLimite = DateTime.now();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -35,30 +37,38 @@ class _AddObjetivoTabState extends State<AddObjetivoTab> {
     String valorPoupar = _valorPouparController.text.trim();
 
     if (nome.isNotEmpty && valorPoupar.isNotEmpty && _isNumeric(valorPoupar)) {
-      await _firestore.collection('objetivo').add({
-        'nome': nome,
-        'dataLimite': _dataLimite,
-        'valorPoupar': double.parse(valorPoupar),
-      });
-      _nomeController.clear();
-      _valorPouparController.clear();
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Objetivo Adicionado'),
-            content: const Text('O objetivo foi adicionado com sucesso.'),
-            actions: [
-              TextButton(
-                child: const Text('OK'),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
+      User? user = _auth.currentUser;
+      String? uid = user?.uid;
+
+      if (uid != null) {
+        await _firestore.collection('objetivo').add({
+          'nome': nome,
+          'dataLimite': _dataLimite,
+          'valorPoupar': double.parse(valorPoupar),
+          'userId': uid, // Adicione o UID do usuário
+        });
+
+        _nomeController.clear();
+        _valorPouparController.clear();
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Objetivo Adicionado'),
+              content: const Text('O objetivo foi adicionado com sucesso.'),
+              actions: [
+                TextButton(
+                  child: const Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
     } else {
       showDialog(
         context: context,

@@ -1,19 +1,21 @@
-enum TransactionType { outflow, inflow }
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+enum TransactionType { despesas, ganhos }
 
 enum ItemCategoryType { fashion, grocery, payments }
 
 class UserInfo {
   final String name;
   final String totalBalance;
-  final String inflow;
-  final String outflow;
+  final String ganhos;
+  final String despesas;
   final List<Transaction> transactions;
 
   const UserInfo(
       {required this.name,
       required this.totalBalance,
-      required this.inflow,
-      required this.outflow,
+      required this.ganhos,
+      required this.despesas,
       required this.transactions});
 }
 
@@ -30,26 +32,33 @@ class Transaction {
 }
 
 const List<Transaction> transactions1 = [
-  Transaction(ItemCategoryType.fashion, TransactionType.outflow, "Calçado",
+  Transaction(ItemCategoryType.fashion, TransactionType.despesas, "Calçado",
       "Air Force 1", "\€130.00", "Out, 23"),
-  Transaction(ItemCategoryType.fashion, TransactionType.outflow, "Carteira",
+  Transaction(ItemCategoryType.fashion, TransactionType.despesas, "Carteira",
       "Gucci Flax", "\€10,500.00", "Set, 13")
 ];
 
-const List<Transaction> transactions2 = [
-  Transaction(ItemCategoryType.payments, TransactionType.inflow, "Pagamento",
-      "Tranferência de Bruno", "\€13,000.00", "Out, 2"),
-  Transaction(ItemCategoryType.payments, TransactionType.inflow, "Pagamento",
-      "Transferência para Leonor", "\€15.00", "Out, 10"),
-  Transaction(ItemCategoryType.payments, TransactionType.outflow, "Renda",
-      "Tranferência para Agostinho", "\€210.00", "Out, 12"),
-  Transaction(ItemCategoryType.fashion, TransactionType.outflow, "Casaco",
-      "The North Face", "\€230.00", "Out, 9")
-];
+class Userdata {
+  String nome;
+  double total;
+  double ganhos;
+  double despesas;
 
-const userdata = UserInfo(
-    name: "Mariana",
-    totalBalance: "4,586.00",
-    inflow: "4,000.00",
-    outflow: "2,000.00",
-    transactions: transactions1);
+  Userdata({
+    required this.nome,
+    required this.total,
+    required this.ganhos,
+    required this.despesas,
+  });
+
+  factory Userdata.fromFirestore(
+      DocumentSnapshot<Map<String, dynamic>> snapshot) {
+    final data = snapshot.data()!;
+    return Userdata(
+      nome: data['nome'] ?? '',
+      total: data['total'] ?? 0.0,
+      ganhos: data['ganhos'] ?? 0.0,
+      despesas: data['despesas'] ?? 0.0,
+    );
+  }
+}

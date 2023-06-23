@@ -192,6 +192,7 @@ class LoginState extends State<Login> {
                         ),
                         child: TextFormField(
                           controller: _controllerPassword,
+                          obscureText: true,
                           decoration: const InputDecoration(
                             border: InputBorder.none,
                             hintText: 'Password',

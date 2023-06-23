@@ -10,9 +10,9 @@ class TransactionItemTile extends StatelessWidget {
 
   String getSign(TransactionType type) {
     switch (type) {
-      case TransactionType.inflow:
+      case TransactionType.ganhos:
         return "+";
-      case TransactionType.outflow:
+      case TransactionType.despesas:
         return "-";
     }
   }
@@ -65,7 +65,7 @@ class TransactionItemTile extends StatelessWidget {
                 "${getSign(transaction.transactionType)} ${transaction.amount}",
                 style: Theme.of(context).textTheme.bodyText1?.copyWith(
                     color:
-                        transaction.transactionType == TransactionType.outflow
+                        transaction.transactionType == TransactionType.despesas
                             ? Colors.red
                             : fontHeading,
                     fontSize: fontSizeBody),

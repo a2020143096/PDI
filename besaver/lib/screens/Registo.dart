@@ -1,4 +1,5 @@
 import 'package:besaver/screens/main_screen_home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -14,6 +15,7 @@ class RegistoState extends State<Registo> {
   bool isLogin = true;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
   final TextEditingController _controllerConfirmPassword =
@@ -21,15 +23,31 @@ class RegistoState extends State<Registo> {
 
   Future<void> createUserWithEmailAndPassword() async {
     try {
-      await _auth.createUserWithEmailAndPassword(
-          email: _controllerEmail.text, password: _controllerPassword.text);
+      UserCredential userCredential =
+          await _auth.createUserWithEmailAndPassword(
+        email: _controllerEmail.text,
+        password: _controllerPassword.text,
+      );
+
+      String userId = userCredential.user!.uid;
+
+      // Associar o usuário ao documento na Firestore usando o ID do usuário
+      await FirebaseFirestore.instance
+          .collection('utilizador')
+          .doc(userId)
+          .set({
+        'nome': _controllerName.text,
+        'email': _controllerEmail.text,
+        'password': _controllerPassword.text, // Salva a senha no Firestore
+      });
+
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const MainScreenHost()),
       );
-    } on FirebaseAuthException catch (e) {
+    } catch (e) {
       setState(() {
-        errorMessage = e.message;
+        errorMessage = e.toString();
       });
     }
   }
@@ -130,6 +148,7 @@ class RegistoState extends State<Registo> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: TextFormField(
+                      controller: _controllerName,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Nome',
@@ -196,6 +215,7 @@ class RegistoState extends State<Registo> {
                     ),
                     child: TextFormField(
                       controller: _controllerPassword,
+                      obscureText: true, // Torna a senha oculta
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Password',
@@ -229,6 +249,7 @@ class RegistoState extends State<Registo> {
                     ),
                     child: TextFormField(
                       controller: _controllerConfirmPassword,
+                      obscureText: true, // Torna a senha oculta
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Confirmar Password',
