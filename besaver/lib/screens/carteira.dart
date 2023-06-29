@@ -59,6 +59,14 @@ class Carteira extends StatelessWidget {
     return transactions;
   }
 
+  void editarMovimento(
+      BuildContext context, QueryDocumentSnapshot transaction) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Editar(transaction: transaction)),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -99,7 +107,7 @@ class Carteira extends StatelessWidget {
               const SizedBox(
                 height: defaultSpacing,
               ),
-              Center(
+              /*Center(
                 child: Column(
                   children: [
                     Text(
@@ -121,7 +129,7 @@ class Carteira extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
+              ),*/
               const SizedBox(
                 height: defaultSpacing * 2,
               ),
@@ -134,15 +142,6 @@ class Carteira extends StatelessWidget {
                         .textTheme
                         .headline6
                         ?.copyWith(fontWeight: FontWeight.w700),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const Editar()),
-                      );
-                    },
                   ),
                 ],
               ),
@@ -189,6 +188,9 @@ class Carteira extends StatelessWidget {
                           final valor = transaction['valor'];
 
                           return ListTile(
+                            onTap: () {
+                              editarMovimento(context, transaction);
+                            },
                             title: Text(
                               categoria,
                               style: const TextStyle(fontSize: 18),
@@ -217,6 +219,9 @@ class Carteira extends StatelessWidget {
                   return const SizedBox();
                 },
               ),
+              const SizedBox(
+                height: defaultSpacing * 2,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -226,15 +231,6 @@ class Carteira extends StatelessWidget {
                         .textTheme
                         .headline6
                         ?.copyWith(fontWeight: FontWeight.w700),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Editar()));
-                    },
                   ),
                 ],
               ),
@@ -281,6 +277,9 @@ class Carteira extends StatelessWidget {
                           final valor = transaction['valor'];
 
                           return ListTile(
+                            onTap: () {
+                              editarMovimento(context, transaction);
+                            },
                             title: Text(
                               categoria,
                               style: const TextStyle(fontSize: 18),
@@ -309,6 +308,9 @@ class Carteira extends StatelessWidget {
                   return const SizedBox();
                 },
               ),
+              const SizedBox(
+                height: defaultSpacing * 2,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -318,15 +320,6 @@ class Carteira extends StatelessWidget {
                         .textTheme
                         .headline6
                         ?.copyWith(fontWeight: FontWeight.w700),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Editar()));
-                    },
                   ),
                 ],
               ),
@@ -373,6 +366,9 @@ class Carteira extends StatelessWidget {
                           final valor = transaction['valor'];
 
                           return ListTile(
+                            onTap: () {
+                              editarMovimento(context, transaction);
+                            },
                             title: Text(
                               categoria,
                               style: const TextStyle(fontSize: 18),
@@ -401,6 +397,9 @@ class Carteira extends StatelessWidget {
                   return const SizedBox();
                 },
               ),
+              const SizedBox(
+                height: defaultSpacing * 2,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -410,15 +409,6 @@ class Carteira extends StatelessWidget {
                         .textTheme
                         .headline6
                         ?.copyWith(fontWeight: FontWeight.w700),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const Editar()));
-                    },
                   ),
                 ],
               ),
@@ -465,6 +455,9 @@ class Carteira extends StatelessWidget {
                           final valor = transaction['valor'];
 
                           return ListTile(
+                            onTap: () {
+                              editarMovimento(context, transaction);
+                            },
                             title: Text(
                               categoria,
                               style: const TextStyle(fontSize: 18),

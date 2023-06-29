@@ -18,7 +18,6 @@ class _EditarPerfilState extends State<EditarPerfil> {
   @override
   void initState() {
     super.initState();
-    // Carrega os dados do Firestore ao iniciar a página
     _loadUserData();
   }
 
@@ -29,14 +28,13 @@ class _EditarPerfilState extends State<EditarPerfil> {
           .collection('utilizador')
           .doc(userId)
           .get();
-      final userData =
-          userDoc.data() as Map<String, dynamic>; // Conversão explícita
+      final userData = userDoc.data() as Map<String, dynamic>;
       setState(() {
         _nomeController.text = userData['nome'];
         _emailController.text = userData['email'];
       });
     } catch (error) {
-      print('Erro ao carregar dados do usuário: $error');
+      print('Erro ao carregar dados do utilizador: $error');
     }
   }
 
@@ -98,51 +96,6 @@ class _EditarPerfilState extends State<EditarPerfil> {
           },
           child: ListView(
             children: [
-              Center(
-                child: Stack(
-                  children: [
-                    Container(
-                      width: 130,
-                      height: 130,
-                      decoration: BoxDecoration(
-                        border: Border.all(width: 4, color: Colors.white),
-                        boxShadow: [
-                          BoxShadow(
-                            spreadRadius: 2,
-                            blurRadius: 10,
-                            color: Colors.black.withOpacity(0.1),
-                          ),
-                        ],
-                        shape: BoxShape.circle,
-                        image: const DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AssetImage('assets/images/avatarr.jpg'),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            width: 4,
-                            color: Colors.white,
-                          ),
-                          color: const Color.fromARGB(255, 87, 124, 89),
-                        ),
-                        child: const Icon(
-                          Icons.edit,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
               const SizedBox(height: 30),
               Container(
                 width: MediaQuery.of(context).size.width * 0.9,
@@ -201,7 +154,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
                       ),
                       child: TextFormField(
                         controller: _emailController,
-                        enabled: false, // Impede a edição do campo de e-mail
+                        enabled: false,
                         decoration: InputDecoration(
                           border: InputBorder.none,
                           hintText: _emailController.text,
@@ -220,38 +173,6 @@ class _EditarPerfilState extends State<EditarPerfil> {
                     const SizedBox(height: 10),
                     const Text(
                       'Alterar Password',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 17,
-                        color: Colors.black,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 237, 236, 236),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: TextFormField(
-                        decoration: const InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Password',
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                padding: const EdgeInsets.only(left: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Confirmar Password',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 17,

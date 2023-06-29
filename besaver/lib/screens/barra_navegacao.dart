@@ -1,33 +1,35 @@
+
+import 'package:besaver/screens/adicionar.dart';
 import 'package:besaver/screens/carteira.dart';
-import 'package:besaver/screens/home_add_tab.dart';
-import 'package:besaver/screens/home_profile_tab.dart';
-import 'package:besaver/screens/home_screen_tab.dart';
+import 'package:besaver/screens/estatistica.dart';
+import 'package:besaver/screens/perfil.dart';
+import 'package:besaver/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
-class MainScreenHost extends StatefulWidget {
-  const MainScreenHost({Key? key}) : super(key: key);
+class BarraDeNavegacao extends StatefulWidget {
+  const BarraDeNavegacao({Key? key}) : super(key: key);
 
   @override
-  State<MainScreenHost> createState() => MainScreenHostState();
+  State<BarraDeNavegacao> createState() => BarraDeNavegacaoState();
 }
 
-class MainScreenHostState extends State<MainScreenHost> {
+class BarraDeNavegacaoState extends State<BarraDeNavegacao> {
   var currentIndex = 0;
 
   Widget buildTabContent(int index) {
     switch (index) {
       case 0:
-        return HomeScreenTab();
+        return HomeScreen();
       case 1:
-        return Container();
+        return Estatistica();
       case 2:
-        return const HomeAddTab();
+        return const Adicionar();
       case 3:
         return const Carteira();
       case 4:
-        return HomeProfileTab();
+        return Perfil();
       default:
-        return HomeScreenTab();
+        return HomeScreen();
     }
   }
 

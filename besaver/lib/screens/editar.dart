@@ -1,89 +1,98 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class Editar extends StatefulWidget {
-  const Editar({key}) : super(key: key);
+  final QueryDocumentSnapshot transaction;
+
+  Editar({required this.transaction});
 
   @override
-  State<Editar> createState() => _EditarState();
+  _EditarState createState() => _EditarState();
 }
 
-enum Gender { male, female }
-
-Gender? _gender = Gender.male;
-
 class _EditarState extends State<Editar> {
+  TextEditingController categoriaController = TextEditingController();
+  TextEditingController descricaoController = TextEditingController();
+  TextEditingController valorController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    categoriaController.text = widget.transaction['categoria'];
+    descricaoController.text = widget.transaction['descricao'];
+    valorController.text = widget.transaction['valor'].toString();
+  }
+
+  void eliminarTransacao() {
+    widget.transaction.reference.delete();
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        width: double.maxFinite,
-        height: double.maxFinite,
-        child: Stack(
+      appBar: AppBar(
+        title: const Text('Editar Movimento'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
           children: [
-            Positioned(
-                left: 0,
-                right: 0,
-                child: Container(
-                  padding: const EdgeInsets.only(left: 25, right: 25, top: 130),
-                  width: double.maxFinite,
-                  height: 230,
-                  decoration: const BoxDecoration(
-                      color: Color.fromARGB(255, 2, 130, 6)),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: const [
-                          Text(
-                            "Editar",
-                            style: TextStyle(
-                              fontSize: 23.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      )
+            TextField(
+              controller: categoriaController,
+              decoration: const InputDecoration(labelText: 'Categoria'),
+            ),
+            TextField(
+              controller: descricaoController,
+              decoration: const InputDecoration(labelText: 'Descrição'),
+            ),
+            TextField(
+              controller: valorController,
+              decoration: const InputDecoration(labelText: 'Valor'),
+              keyboardType: TextInputType.number,
+            ),
+            const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                widget.transaction.reference.update({
+                  'categoria': categoriaController.text,
+                  'descricao': descricaoController.text,
+                  'valor': valorController.text,
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('Guardar Alterações'),
+            ),
+            const SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: const Text('Confirmação'),
+                    content:
+                        const Text('Deseja mesmo eliminar este movimento?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: const Text('Cancelar'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          eliminarTransacao();
+                          Navigator.pop(context);
+                        },
+                        child: const Text('Eliminar'),
+                      ),
                     ],
                   ),
-                )),
-            Positioned(
-                left: 15,
-                top: 50,
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.close),
-                      color: Colors.white,
-                    )
-                  ],
-                )),
-            Positioned(
-                top: 170,
-                child: Container(
-                  padding: const EdgeInsets.only(left: 20, right: 20, top: 30),
-                  width: MediaQuery.of(context).size.width,
-                  height: 500,
-                  decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(35),
-                          topRight: Radius.circular(35))),
-                  child: Column(children: [
-                    Row(
-                      children: const [
-                        Text(
-                          'Tipo',
-                          style: TextStyle(
-                            fontSize: 21.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    )
-                  ]),
-                ))
+                );
+              },
+              child: const Text('Eliminar'),
+              style: ElevatedButton.styleFrom(primary: Colors.red),
+            ),
           ],
         ),
       ),

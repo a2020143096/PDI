@@ -3,17 +3,43 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../utils/constants.dart';
 
-class AddCategoriasTab extends StatefulWidget {
-  const AddCategoriasTab({Key? key}) : super(key: key);
+class AdicionarCategorias extends StatefulWidget {
+  const AdicionarCategorias({Key? key}) : super(key: key);
 
   @override
-  _AddCategoriasTabState createState() => _AddCategoriasTabState();
+  _AdicionarCategoriasState createState() => _AdicionarCategoriasState();
 }
 
-class _AddCategoriasTabState extends State<AddCategoriasTab> {
+class _AdicionarCategoriasState extends State<AdicionarCategorias> {
   TextEditingController nomeCategoriaController = TextEditingController();
-  bool hasLimit = false;
-  int valorLimite = 0;
+
+  void eliminarMovimentos(String categoriaId) async {
+    try {
+      final QuerySnapshot movimentosSnapshot = await FirebaseFirestore.instance
+          .collection('movimentos')
+          .where('categoriaId', isEqualTo: categoriaId)
+          .get();
+
+      for (final DocumentSnapshot doc in movimentosSnapshot.docs) {
+        await doc.reference.delete();
+      }
+    } catch (error) {
+      print('Erro ao eliminar movimento: $error');
+    }
+  }
+
+  void eliminarCategoria(String categoriaId) async {
+    try {
+      eliminarMovimentos(categoriaId);
+
+      await FirebaseFirestore.instance
+          .collection('categorias')
+          .doc(categoriaId)
+          .delete();
+    } catch (error) {
+      print('Erro ao eliminar categoria: $error');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,10 +89,6 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
                             as Map<String, dynamic>?;
                         if (categoria != null &&
                             categoria.containsKey('nome')) {
-                          String valor = categoria.containsKey('valor')
-                              ? categoria['valor'].toString() + '€'
-                              : '';
-
                           return ListTile(
                             leading: Container(
                               padding: const EdgeInsets.all(defaultSpacing / 2),
@@ -76,7 +98,7 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
                                   Radius.circular(defaultRadius / 2),
                                 ),
                               ),
-                              child: const Icon(Icons.house),
+                              child: const Icon(Icons.done_outline_rounded),
                             ),
                             title: Text(
                               categoria['nome'] as String,
@@ -86,7 +108,37 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
-                            subtitle: Text(valor),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text('Confirmar eliminação'),
+                                      content: const Text(
+                                          'Deseja mesmo eliminar esta categoria?'),
+                                      actions: [
+                                        TextButton(
+                                          child: const Text('Cancelar'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: const Text('Eliminar'),
+                                          onPressed: () {
+                                            eliminarCategoria(
+                                                snapshot.data!.docs[index].id);
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                            ),
                           );
                         } else {
                           return const SizedBox.shrink();
@@ -139,51 +191,6 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
                 ),
               ),
               const SizedBox(height: 10),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: Row(
-                  children: [
-                    Checkbox(
-                      value: hasLimit,
-                      onChanged: (value) {
-                        setState(() {
-                          hasLimit = value!;
-                        });
-                      },
-                    ),
-                    const SizedBox(width: 10.0),
-                    const Text(
-                      'Limite',
-                      style: TextStyle(
-                        fontSize: 17.0,
-                        color: Color.fromARGB(255, 67, 66, 66),
-                      ),
-                    ),
-                    if (hasLimit) ...[
-                      const SizedBox(width: 10.0),
-                      GestureDetector(
-                        onTap: () {
-                          showPicker();
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10.0,
-                            vertical: 6.0,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(4.0),
-                          ),
-                          child: Text(
-                            valorLimite.toString(),
-                            style: const TextStyle(fontSize: 16.0),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ],
-                ),
-              ),
               const SizedBox(height: 17.0),
               Container(
                 color: Colors.black.withOpacity(0.1),
@@ -195,7 +202,7 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   ElevatedButton(
-                    onPressed: registrarCategoria,
+                    onPressed: registarCategoria,
                     style: ElevatedButton.styleFrom(
                       primary: const Color.fromARGB(255, 87, 124, 89),
                       textStyle: const TextStyle(fontSize: 20.0),
@@ -215,69 +222,21 @@ class _AddCategoriasTabState extends State<AddCategoriasTab> {
     );
   }
 
-  void showPicker() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        TextEditingController textController =
-            TextEditingController(text: valorLimite.toString());
-        return AlertDialog(
-          title: const Text('Escolha o Valor Limite'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: textController,
-                keyboardType: TextInputType.number,
-                decoration: const InputDecoration(
-                  labelText: 'Valor Limite',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  valorLimite = int.tryParse(textController.text) ?? 0;
-                });
-                Navigator.of(context).pop();
-              },
-              child: const Text('Confirmar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void registrarCategoria() async {
+  void registarCategoria() async {
     String nomeCategoria = nomeCategoriaController.text.trim();
-    double? valor;
 
     if (nomeCategoria.isNotEmpty) {
       try {
-        if (hasLimit) {
-          valor = valorLimite.toDouble();
-        }
-
         final User? user = FirebaseAuth.instance.currentUser;
         final String? uid = user?.uid;
 
         if (uid != null) {
           await FirebaseFirestore.instance.collection('categorias').add({
             'nome': nomeCategoria,
-            'valor': valor,
-            'hasLimit': hasLimit,
             'userId': uid,
           });
 
           nomeCategoriaController.clear();
-          setState(() {
-            hasLimit = false;
-            valorLimite = 0;
-          });
         }
       } catch (error) {
         print('Erro ao adicionar categoria: $error');

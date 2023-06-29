@@ -8,7 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class HomeProfileTab extends StatelessWidget {
+class Perfil extends StatelessWidget {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -17,12 +17,11 @@ class HomeProfileTab extends StatelessWidget {
     if (userId != null) {
       return await _firestore.collection('utilizador').doc(userId).get();
     } else {
-      throw Exception('Usuário não autenticado');
+      throw Exception('Utilizador não autenticado');
     }
   }
 
-  void _handleProfileAccountInfoTileClick(
-      BuildContext context, String heading) {
+  void _Cliques(BuildContext context, String heading) {
     if (heading == "Meus Dados") {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => MeusDados()));
@@ -39,7 +38,7 @@ class HomeProfileTab extends StatelessWidget {
           (Route<dynamic> route) => false,
         );
       }).catchError((error) {
-        print("Erro durante a terminar sessão: $error");
+        print("Erro a terminar sessão: $error");
       });
     }
   }
@@ -69,13 +68,15 @@ class HomeProfileTab extends StatelessWidget {
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
-                          return CircularProgressIndicator();
+                          return const CircularProgressIndicator();
                         }
                         if (snapshot.hasError) {
-                          return Text('Erro ao carregar os dados do usuário');
+                          return const Text(
+                              'Erro ao carregar os dados do utilizador');
                         }
                         if (!snapshot.hasData) {
-                          return Text('Dados do usuário não encontrados');
+                          return const Text(
+                              'Dados do utilizador não encontrados');
                         }
 
                         var userData = snapshot.data!.data();
@@ -122,7 +123,7 @@ class HomeProfileTab extends StatelessWidget {
                                           const EditarPerfil()),
                                 );
                               },
-                              child: Chip(
+                              child: const Chip(
                                 backgroundColor:
                                     Color.fromARGB(255, 87, 124, 89),
                                 label: Text(
@@ -161,9 +162,8 @@ class HomeProfileTab extends StatelessWidget {
                         height: 32.0,
                       ),
                       GestureDetector(
-                        onTap: () => _handleProfileAccountInfoTileClick(
-                            context, "Meus Dados"),
-                        child: ProfileAccountInfoTile(
+                        onTap: () => _Cliques(context, "Meus Dados"),
+                        child: const ProfileAccountInfoTile(
                           iconUrl: "assets/icons/user.png",
                           heading: "Meus Dados",
                         ),
@@ -172,9 +172,8 @@ class HomeProfileTab extends StatelessWidget {
                         height: 32.0,
                       ),
                       GestureDetector(
-                        onTap: () => _handleProfileAccountInfoTileClick(
-                            context, "Notificações"),
-                        child: ProfileAccountInfoTile(
+                        onTap: () => _Cliques(context, "Notificações"),
+                        child: const ProfileAccountInfoTile(
                           iconUrl: "assets/icons/notification.png",
                           heading: "Notificações",
                         ),
@@ -183,9 +182,8 @@ class HomeProfileTab extends StatelessWidget {
                         height: 32.0,
                       ),
                       GestureDetector(
-                        onTap: () => _handleProfileAccountInfoTileClick(
-                            context, "Ajuda"),
-                        child: ProfileAccountInfoTile(
+                        onTap: () => _Cliques(context, "Ajuda"),
+                        child: const ProfileAccountInfoTile(
                           iconUrl: "assets/icons/question.png",
                           heading: "Ajuda",
                         ),
@@ -194,9 +192,8 @@ class HomeProfileTab extends StatelessWidget {
                         height: 32.0,
                       ),
                       GestureDetector(
-                        onTap: () => _handleProfileAccountInfoTileClick(
-                            context, "Terminar sessão"),
-                        child: ProfileAccountInfoTile(
+                        onTap: () => _Cliques(context, "Terminar sessão"),
+                        child: const ProfileAccountInfoTile(
                           iconUrl: "assets/icons/logout.png",
                           heading: "Terminar sessão",
                         ),

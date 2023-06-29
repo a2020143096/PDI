@@ -23,7 +23,10 @@ dependencies:
   numberpicker: ^2.1.2
   intl: ^0.18.1
   email_validator: ^2.1.17
+  fl_chart: ^0.62.0
 
+ 
+ 
 
 dev_dependencies:
   flutter_test:
@@ -42,4 +45,3 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-

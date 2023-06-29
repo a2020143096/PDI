@@ -1,4 +1,4 @@
-import 'package:besaver/screens/main_screen_home.dart';
+import 'package:besaver/screens/barra_navegacao.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +18,6 @@ class RegistoState extends State<Registo> {
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
-  final TextEditingController _controllerConfirmPassword =
-      TextEditingController();
 
   Future<void> createUserWithEmailAndPassword() async {
     try {
@@ -31,19 +29,18 @@ class RegistoState extends State<Registo> {
 
       String userId = userCredential.user!.uid;
 
-      // Associar o usuário ao documento na Firestore usando o ID do usuário
       await FirebaseFirestore.instance
           .collection('utilizador')
           .doc(userId)
           .set({
         'nome': _controllerName.text,
         'email': _controllerEmail.text,
-        'password': _controllerPassword.text, // Salva a senha no Firestore
+        'password': _controllerPassword.text,
       });
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const MainScreenHost()),
+        MaterialPageRoute(builder: (context) => const BarraDeNavegacao()),
       );
     } catch (e) {
       setState(() {
@@ -215,44 +212,10 @@ class RegistoState extends State<Registo> {
                     ),
                     child: TextFormField(
                       controller: _controllerPassword,
-                      obscureText: true, // Torna a senha oculta
+                      obscureText: true,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Password',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.9,
-              padding: const EdgeInsets.only(left: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 10),
-                  const Text(
-                    'Confirmar Password',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17,
-                      color: Colors.black,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 237, 236, 236),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: TextFormField(
-                      controller: _controllerConfirmPassword,
-                      obscureText: true, // Torna a senha oculta
-                      decoration: const InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Confirmar Password',
                       ),
                     ),
                   ),

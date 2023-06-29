@@ -12,6 +12,7 @@ class _MeusDadosState extends State<MeusDados> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController _nomeController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
+  TextEditingController _saldoController = TextEditingController();
   bool _isNameChanged = false;
 
   @override
@@ -29,13 +30,13 @@ class _MeusDadosState extends State<MeusDados> {
         setState(() {
           _nomeController.text = userData.data()?['nome'] ?? '';
           _emailController.text = userData.data()?['email'] ?? '';
+          _saldoController.text = userData.data()?['saldo'].toString() ?? '';
         });
       } else {
-        throw Exception('Usuário não autenticado');
+        throw Exception('Utilizador não autenticado');
       }
     } catch (e) {
-      // Tratar o erro adequadamente
-      print('Erro ao carregar os dados do usuário: $e');
+      print('Erro ao carregar os dados do utilizador: $e');
     }
   }
 
@@ -47,7 +48,7 @@ class _MeusDadosState extends State<MeusDados> {
           'nome': _nomeController.text,
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Dados salvos com sucesso.')),
+          const SnackBar(content: Text('Dados guardados com sucesso.')),
         );
         setState(() {
           _isNameChanged = false;
@@ -58,8 +59,7 @@ class _MeusDadosState extends State<MeusDados> {
         );
       }
     } catch (e) {
-      // Tratar o erro adequadamente
-      print('Erro ao salvar os dados do usuário: $e');
+      print('Erro ao guardar os dados do utilizador: $e');
     }
   }
 
@@ -117,6 +117,7 @@ class _MeusDadosState extends State<MeusDados> {
                       ),
                       child: TextFormField(
                         controller: _nomeController,
+                        enabled: false,
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                           hintText: 'Nome',
@@ -155,7 +156,7 @@ class _MeusDadosState extends State<MeusDados> {
                       ),
                       child: TextFormField(
                         controller: _emailController,
-                        enabled: false, // Desabilita a edição do campo de texto
+                        enabled: false,
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                           hintText: 'email',
@@ -185,9 +186,8 @@ class _MeusDadosState extends State<MeusDados> {
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: TextFormField(
-                              //controller: _emailController,
-                              enabled:
-                                  false, // Desabilita a edição do campo de texto
+                              controller: _saldoController,
+                              enabled: false,
                               decoration: const InputDecoration(
                                 border: InputBorder.none,
                                 hintText: 'saldo',
@@ -197,15 +197,6 @@ class _MeusDadosState extends State<MeusDados> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
-                    if (_isNameChanged) // Exibe o botão "Salvar" somente se o nome foi alterado
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        child: ElevatedButton(
-                          onPressed: _saveUserData,
-                          child: const Text('Salvar'),
-                        ),
-                      ),
                   ],
                 ),
               ),

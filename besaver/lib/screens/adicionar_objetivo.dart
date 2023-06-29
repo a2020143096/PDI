@@ -4,14 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../utils/constants.dart';
 
-class AddObjetivoTab extends StatefulWidget {
-  AddObjetivoTab({Key? key}) : super(key: key);
+class AdicionarObjetivos extends StatefulWidget {
+  AdicionarObjetivos({Key? key}) : super(key: key);
 
   @override
-  _AddObjetivoTabState createState() => _AddObjetivoTabState();
+  _AdicionarObjetivosState createState() => _AdicionarObjetivosState();
 }
 
-class _AddObjetivoTabState extends State<AddObjetivoTab> {
+class _AdicionarObjetivosState extends State<AdicionarObjetivos> {
   late TextEditingController _nomeController;
   late TextEditingController _valorPouparController;
   DateTime _dataLimite = DateTime.now();
@@ -45,7 +45,7 @@ class _AddObjetivoTabState extends State<AddObjetivoTab> {
           'nome': nome,
           'dataLimite': _dataLimite,
           'valorPoupar': double.parse(valorPoupar),
-          'userId': uid, // Adicione o UID do usuário
+          'userId': uid,
         });
 
         _nomeController.clear();
@@ -240,6 +240,6 @@ class _AddObjetivoTabState extends State<AddObjetivoTab> {
 
 void main() {
   runApp(MaterialApp(
-    home: AddObjetivoTab(),
+    home: AdicionarObjetivos(),
   ));
 }

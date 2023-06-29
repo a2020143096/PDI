@@ -1,4 +1,4 @@
-import 'package:besaver/screens/main_screen_home.dart';
+import 'package:besaver/screens/barra_navegacao.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
@@ -51,12 +51,12 @@ class LoginState extends State<Login> {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const MainScreenHost()),
+        MaterialPageRoute(builder: (context) => const BarraDeNavegacao()),
       );
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'wrong-password') {
+      if (e.code == 'password-errada') {
         setState(() {
-          errorMessage = 'Senha incorreta.';
+          errorMessage = 'palavra-passe incorreta.';
         });
       } else {
         setState(() {

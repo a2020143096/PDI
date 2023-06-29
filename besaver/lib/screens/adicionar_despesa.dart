@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-class AddDespesaTab extends StatefulWidget {
-  const AddDespesaTab({Key? key}) : super(key: key);
+class AdicionarDespesas extends StatefulWidget {
+  const AdicionarDespesas({Key? key}) : super(key: key);
 
   @override
-  _AddDespesaTabState createState() => _AddDespesaTabState();
+  _AdicionarDespesasState createState() => _AdicionarDespesasState();
 }
 
-class _AddDespesaTabState extends State<AddDespesaTab> {
+class _AdicionarDespesasState extends State<AdicionarDespesas> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late List<String> categorias;
   String? selectedCategoria;
@@ -48,20 +48,21 @@ class _AddDespesaTabState extends State<AddDespesaTab> {
   }
 
   Future<void> adicionarDespesa() async {
-    final String? valor = _valorController.text;
+    final String? valorString = _valorController.text;
     final String? descricao = _descricaoController.text;
     final User? user = FirebaseAuth.instance.currentUser;
     final String? uid = user?.uid;
 
     if (selectedCategoria != null &&
-        valor != null &&
+        valorString != null &&
         descricao != null &&
         uid != null) {
+      final double valor = double.parse(valorString); // Converter para double
       final String collectionName =
           selectedTipo == 'Rendimento' ? 'rendimentos' : 'despesas';
       await _firestore.collection(collectionName).add({
         'categoria': selectedCategoria,
-        'valor': valor,
+        'valor': valor, // Armazenar o valor numérico
         'descricao': descricao,
         'fixa': isFixa,
         'userId': uid,

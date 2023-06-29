@@ -1,7 +1,7 @@
 import 'package:besaver/screens/pinicial.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:besaver/screens/main_screen_home.dart';
+import 'package:besaver/screens/barra_navegacao.dart';
 import 'package:flutter/material.dart';
 
 Future<void> main() async {
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.data != null) {
-              return const MainScreenHost();
+              return const BarraDeNavegacao();
             } else {
               return const Pinicial();
             }

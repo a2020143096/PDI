@@ -2,19 +2,18 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
 import '../utils/constants.dart';
 import '../utils/widget/income_expense_card.dart';
 
 class Userdata {
   String nome;
-  double total;
+  double saldo;
   double ganhos;
   double despesas;
 
   Userdata({
     required this.nome,
-    required this.total,
+    required this.saldo,
     required this.ganhos,
     required this.despesas,
   });
@@ -22,20 +21,26 @@ class Userdata {
   factory Userdata.fromFirestore(
       DocumentSnapshot<Map<String, dynamic>> snapshot) {
     final data = snapshot.data()!;
+    double saldo = 0.0;
+    final saldoValue = data['saldo'];
+    if (saldoValue is int) {
+      saldo = saldoValue.toDouble();
+    } else if (saldoValue is double) {
+      saldo = saldoValue;
+    }
     return Userdata(
       nome: data['nome'] ?? '',
-      total: data['total'] ?? 0.0,
+      saldo: saldo,
       ganhos: data['ganhos'] ?? 0.0,
       despesas: data['despesas'] ?? 0.0,
     );
   }
 }
 
-class TransactionItemTile extends StatelessWidget {
+class Movimentos extends StatelessWidget {
   final QueryDocumentSnapshot transaction;
 
-  const TransactionItemTile({Key? key, required this.transaction})
-      : super(key: key);
+  const Movimentos({Key? key, required this.transaction}) : super(key: key);
 
   Color getRandomBgColor() {
     return Color(Random().nextInt(0XFF000000));
@@ -44,11 +49,11 @@ class TransactionItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = transaction.data() as Map<String, dynamic>;
-    final category = data['categoria'];
-    final value = data['valor'];
-    final description = data['descricao'];
+    final categoria = data['categoria'];
+    final valor = data['valor'];
+    final descricao = data['descricao'];
 
-    final double numericValue = double.tryParse(value.toString()) ?? 0.0;
+    final double numericValue = double.tryParse(valor.toString()) ?? 0.0;
 
     String valuePrefix;
     Color textColor;
@@ -79,7 +84,7 @@ class TransactionItemTile extends StatelessWidget {
       ),
       child: ListTile(
         title: Text(
-          category ?? '',
+          categoria ?? '',
           style: Theme.of(context).textTheme.bodyText1?.copyWith(
                 color: fontHeading,
                 fontSize: fontSizeTitle,
@@ -87,7 +92,7 @@ class TransactionItemTile extends StatelessWidget {
               ),
         ),
         subtitle: Text(
-          description ?? '',
+          descricao ?? '',
           style: Theme.of(context).textTheme.bodyText1?.copyWith(
                 color: fontSubHeading,
                 fontSize: fontSizeBody,
@@ -111,19 +116,89 @@ class TransactionItemTile extends StatelessWidget {
   }
 }
 
-class HomeScreenTab extends StatelessWidget {
-  const HomeScreenTab({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
-  Future<Userdata> fetchUserDataFromFirestore() async {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  Userdata? userData;
+  double totalGanhos = 0.0;
+  double totalDespesas = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserDataFromFirestore();
+    fetchTotalGanhos();
+    fetchTotalDespesas();
+  }
+
+  Future<void> fetchUserDataFromFirestore() async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId != null) {
       final snapshot = await FirebaseFirestore.instance
           .collection('utilizador')
           .doc(userId)
           .get();
-      return Userdata.fromFirestore(snapshot);
+      final userData = Userdata.fromFirestore(snapshot);
+      setState(() {
+        this.userData = userData;
+      });
     } else {
-      throw Exception('Usuário não autenticado');
+      throw Exception('Utilizador não autenticado');
+    }
+  }
+
+  Future<void> fetchTotalGanhos() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('rendimentos')
+          .where('userId', isEqualTo: userId)
+          .get();
+      double totalGanhos = 0;
+      snapshot.docs.forEach((doc) {
+        final valor = doc.data()['valor'];
+        if (valor is int) {
+          totalGanhos += valor.toDouble();
+        } else if (valor is double) {
+          totalGanhos += valor;
+        }
+      });
+
+      setState(() {
+        this.totalGanhos = totalGanhos;
+      });
+    } else {
+      throw Exception('Utilizador não autenticado');
+    }
+  }
+
+  Future<void> fetchTotalDespesas() async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('despesas')
+          .where('userId', isEqualTo: userId)
+          .get();
+      double totalDespesas = 0;
+      snapshot.docs.forEach((doc) {
+        final valor = doc.data()['valor'];
+        if (valor is int) {
+          totalDespesas += valor.toDouble();
+        } else if (valor is double) {
+          totalDespesas += valor;
+        }
+      });
+
+      setState(() {
+        this.totalDespesas = totalDespesas;
+      });
+    } else {
+      throw Exception('Utilizador não autenticado');
     }
   }
 
@@ -150,7 +225,7 @@ class HomeScreenTab extends StatelessWidget {
 
       return transactions;
     } else {
-      throw Exception('Usuário não autenticado');
+      throw Exception('Utilizador não autenticado');
     }
   }
 
@@ -163,50 +238,21 @@ class HomeScreenTab extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: defaultSpacing * 4),
-            FutureBuilder<Userdata>(
-              future: fetchUserDataFromFirestore(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasData) {
-                  final userdata = snapshot.data!;
-                  return Text("Olá, ${userdata.nome}!",
-                      style: const TextStyle(fontSize: 25));
-                } else if (snapshot.hasError) {
-                  return Text(
-                      'Erro ao carregar os dados do usuário: ${snapshot.error}');
-                } else {
-                  return Text('Dados do usuário não encontrados');
-                }
-              },
-            ),
+            if (userData != null)
+              Text("Olá, ${userData!.nome}!",
+                  style: const TextStyle(fontSize: 25)),
             const SizedBox(height: defaultSpacing),
             Center(
               child: Column(
                 children: [
-                  FutureBuilder<Userdata>(
-                    future: fetchUserDataFromFirestore(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasData) {
-                        final userdata = snapshot.data!;
-                        return Text(
-                          "\€ ${userdata.total}",
-                          style:
-                              Theme.of(context).textTheme.titleLarge?.copyWith(
-                                    fontSize: fontSizeHeading,
-                                    fontWeight: FontWeight.w800,
-                                  ),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text(
-                            'Erro ao carregar os dados do usuário: ${snapshot.error}');
-                      } else {
-                        return Text('Dados do usuário não encontrados');
-                      }
-                    },
-                  ),
+                  if (userData != null)
+                    Text(
+                      "€ ${userData?.saldo.toStringAsFixed(2)}",
+                      style: Theme.of(context).textTheme.headline5?.copyWith(
+                            fontSize: fontSizeHeading,
+                            fontWeight: FontWeight.w800,
+                          ),
+                    ),
                   const SizedBox(height: defaultSpacing / 2),
                   Text(
                     "Total",
@@ -223,52 +269,22 @@ class HomeScreenTab extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Expanded(
-                  child: FutureBuilder<Userdata>(
-                    future: fetchUserDataFromFirestore(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasData) {
-                        final userdata = snapshot.data!;
-                        return IncomeExpenseCard(
-                          expenseData: ExpenseData(
-                            "Ganhos",
-                            userdata.ganhos.toStringAsFixed(2),
-                            Icons.arrow_upward_rounded,
-                          ),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text(
-                            'Erro ao carregar os dados do usuário: ${snapshot.error}');
-                      } else {
-                        return Text('Dados do usuário não encontrados');
-                      }
-                    },
+                  child: IncomeExpenseCard(
+                    expenseData: ExpenseData(
+                      "Rendimentos",
+                      totalGanhos.toStringAsFixed(2),
+                      Icons.arrow_upward_rounded,
+                    ),
                   ),
                 ),
                 const SizedBox(width: defaultSpacing),
                 Expanded(
-                  child: FutureBuilder<Userdata>(
-                    future: fetchUserDataFromFirestore(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.hasData) {
-                        final userdata = snapshot.data!;
-                        return IncomeExpenseCard(
-                          expenseData: ExpenseData(
-                            "Despesas",
-                            userdata.despesas.toStringAsFixed(2),
-                            Icons.arrow_downward_rounded,
-                          ),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Text(
-                            'Erro ao carregar os dados do usuário: ${snapshot.error}');
-                      } else {
-                        return Text('Dados do usuário não encontrados');
-                      }
-                    },
+                  child: IncomeExpenseCard(
+                    expenseData: ExpenseData(
+                      "Despesas",
+                      totalDespesas.toStringAsFixed(2),
+                      Icons.arrow_downward_rounded,
+                    ),
                   ),
                 ),
               ],
@@ -278,7 +294,7 @@ class HomeScreenTab extends StatelessWidget {
               "Últimas transações",
               style: Theme.of(context)
                   .textTheme
-                  .titleLarge
+                  .headline5
                   ?.copyWith(fontSize: fontSizeHeading),
             ),
             const SizedBox(height: defaultSpacing),
@@ -294,7 +310,7 @@ class HomeScreenTab extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: transactions.length,
                     itemBuilder: (context, index) {
-                      return TransactionItemTile(
+                      return Movimentos(
                         transaction: transactions[index],
                       );
                     },
