@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../utils/constants.dart';
 
-class AdicionarCategorias extends StatefulWidget {
-  const AdicionarCategorias({Key? key}) : super(key: key);
+class AddCategoriasTab extends StatefulWidget {
+  const AddCategoriasTab({Key? key}) : super(key: key);
 
   @override
-  _AdicionarCategoriasState createState() => _AdicionarCategoriasState();
+  _AddCategoriasTabState createState() => _AddCategoriasTabState();
 }
 
-class _AdicionarCategoriasState extends State<AdicionarCategorias> {
+class _AddCategoriasTabState extends State<AddCategoriasTab> {
   TextEditingController nomeCategoriaController = TextEditingController();
 
   void eliminarMovimentos(String categoriaId) async {

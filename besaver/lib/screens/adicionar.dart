@@ -1,8 +1,7 @@
-
+import 'package:besaver/screens/add_categorias_tab.dart';
+import 'package:besaver/screens/add_despesa_tab.dart';
+import 'package:besaver/screens/add_objetivo_tab.dart';
 import 'package:flutter/material.dart';
-import 'adicionar_categorias.dart';
-import 'adicionar_despesa.dart';
-import 'adicionar_objetivo.dart';
 
 class Adicionar extends StatelessWidget {
   const Adicionar({key}) : super(key: key);
@@ -41,7 +40,7 @@ class Adicionar extends StatelessWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const AdicionarCategorias()));
+                        builder: (context) => const AddCategoriasTab()));
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Color.fromARGB(255, 87, 124, 89),

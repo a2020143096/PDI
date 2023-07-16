@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../utils/constants.dart';
-import '../utils/widget/income_expense_card.dart';
+import '../utils/widget/income_expense.dart';
 
 class Userdata {
   String nome;

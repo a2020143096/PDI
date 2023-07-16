@@ -1,4 +1,4 @@
-import 'package:besaver/screens/barra_navegacao.dart';
+import 'package:besaver/screens/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +18,8 @@ class RegistoState extends State<Registo> {
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
+  final TextEditingController _controllerConfirmPassword =
+      TextEditingController();
 
   Future<void> createUserWithEmailAndPassword() async {
     try {
@@ -29,18 +31,19 @@ class RegistoState extends State<Registo> {
 
       String userId = userCredential.user!.uid;
 
+      // Associar o usuário ao documento na Firestore usando o ID do usuário
       await FirebaseFirestore.instance
           .collection('utilizador')
           .doc(userId)
           .set({
         'nome': _controllerName.text,
         'email': _controllerEmail.text,
-        'password': _controllerPassword.text,
+        'password': _controllerPassword.text, // Salva a senha no Firestore
       });
 
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const BarraDeNavegacao()),
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
     } catch (e) {
       setState(() {
@@ -212,7 +215,7 @@ class RegistoState extends State<Registo> {
                     ),
                     child: TextFormField(
                       controller: _controllerPassword,
-                      obscureText: true,
+                      obscureText: true, // Torna a senha oculta
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Password',

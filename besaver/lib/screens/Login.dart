@@ -1,4 +1,4 @@
-import 'package:besaver/screens/barra_navegacao.dart';
+import 'package:besaver/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:email_validator/email_validator.dart';
@@ -51,7 +51,7 @@ class LoginState extends State<Login> {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const BarraDeNavegacao()),
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
     } on FirebaseAuthException catch (e) {
       if (e.code == 'password-errada') {
