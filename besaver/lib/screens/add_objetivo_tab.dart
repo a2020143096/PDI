@@ -13,43 +13,48 @@ class AdicionarObjetivos extends StatefulWidget {
 
 class _AdicionarObjetivosState extends State<AdicionarObjetivos> {
   late TextEditingController _nomeController;
-  late TextEditingController _valorPouparController;
+  late TextEditingController _valorMaximoController;
   DateTime _dataLimite = DateTime.now();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  List<String> _categorias = [];
+  String? _categoriaSelecionada;
 
   @override
   void initState() {
     super.initState();
     _nomeController = TextEditingController();
-    _valorPouparController = TextEditingController();
+    _valorMaximoController = TextEditingController();
+    _carregarCategorias();
   }
 
   @override
   void dispose() {
     _nomeController.dispose();
-    _valorPouparController.dispose();
+    _valorMaximoController.dispose();
     super.dispose();
   }
 
   Future<void> _adicionarObjetivo() async {
     String nome = _nomeController.text.trim();
-    String valorPoupar = _valorPouparController.text.trim();
+    String valorMaximo = _valorMaximoController.text.trim();
 
-    if (nome.isNotEmpty && valorPoupar.isNotEmpty && _isNumeric(valorPoupar)) {
+    if (nome.isNotEmpty && valorMaximo.isNotEmpty && _isNumeric(valorMaximo)) {
       User? user = _auth.currentUser;
       String? uid = user?.uid;
 
       if (uid != null) {
         await _firestore.collection('objetivo').add({
           'nome': nome,
-          'dataLimite': _dataLimite,
-          'valorPoupar': double.parse(valorPoupar),
+          //'dataLimite': _dataLimite,
+          'valorMaximo': double.parse(valorMaximo),
+          'categoria': _categoriaSelecionada,
           'userId': uid,
         });
 
         _nomeController.clear();
-        _valorPouparController.clear();
+        _valorMaximoController.clear();
 
         showDialog(
           context: context,
@@ -97,6 +102,57 @@ class _AdicionarObjetivosState extends State<AdicionarObjetivos> {
     return double.tryParse(value) != null;
   }
 
+  Future<void> _carregarCategorias() async {
+    User? user = _auth.currentUser;
+    String? uid = user?.uid;
+
+    if (uid != null) {
+      QuerySnapshot snapshot = await _firestore
+          .collection('categorias')
+          .where('userId', isEqualTo: uid)
+          .get();
+
+      List<String> categorias =
+          snapshot.docs.map((doc) => doc['nome'] as String).toList();
+
+      setState(() {
+        _categorias = categorias;
+      });
+    }
+  }
+
+  Widget _buildObjetivosList() {
+    return StreamBuilder<QuerySnapshot>(
+      stream: _firestore.collection('objetivo').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const CircularProgressIndicator();
+        }
+
+        List<Widget> objetivosWidgets = [];
+        final objetivos = snapshot.data!.docs;
+        for (var objetivo in objetivos) {
+          final objetivoNome = objetivo['nome'] as String;
+          final objetivoValorMaximo = objetivo['valorMaximo'] as double;
+          final objetivoCategoria =
+              objetivo['categoria'] as String? ?? 'Categoria não definida';
+
+          final objetivoWidget = ListTile(
+            title: Text(objetivoNome),
+            subtitle: Text('Valor Máximo: €$objetivoValorMaximo'),
+            trailing: Text('Categoria: $objetivoCategoria'),
+          );
+
+          objetivosWidgets.add(objetivoWidget);
+        }
+
+        return Column(
+          children: objetivosWidgets,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,7 +164,7 @@ class _AdicionarObjetivosState extends State<AdicionarObjetivos> {
           },
         ),
         title: const Text(
-          "Adicionar Objetivo de Poupança",
+          "Adicionar Máximo de despesa",
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: const Color.fromARGB(255, 87, 124, 89),
@@ -142,7 +198,7 @@ class _AdicionarObjetivosState extends State<AdicionarObjetivos> {
                       ),
                     ),
                     const SizedBox(height: 20.0),
-                    const Text(
+                    /*const Text(
                       'Data Limite:',
                       style: TextStyle(
                         fontSize: 20.0,
@@ -177,13 +233,13 @@ class _AdicionarObjetivosState extends State<AdicionarObjetivos> {
                           const Icon(Icons.calendar_today),
                         ],
                       ),
-                    ),
+                    ),*/
                     const SizedBox(
                       height: defaultSpacing / 2,
                     ),
                     const SizedBox(height: 20.0),
                     const Text(
-                      'Valor que deseja poupar:',
+                      'Valor máximo de despesa:',
                       style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.bold,
@@ -194,11 +250,11 @@ class _AdicionarObjetivosState extends State<AdicionarObjetivos> {
                       height: defaultSpacing / 2,
                     ),
                     TextFormField(
-                      controller: _valorPouparController,
+                      controller: _valorMaximoController,
                       keyboardType: TextInputType.number,
                       decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        hintText: 'Valor a poupar',
+                        hintText: 'Valor máximo de despesa',
                         prefix: Text('€'),
                       ),
                       validator: (value) {
@@ -210,6 +266,34 @@ class _AdicionarObjetivosState extends State<AdicionarObjetivos> {
                         }
                         return null;
                       },
+                    ),
+                    const SizedBox(height: 20.0),
+                    const Text(
+                      'Categoria:',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 87, 124, 89),
+                      ),
+                    ),
+                    const SizedBox(height: defaultSpacing / 2),
+                    DropdownButtonFormField<String>(
+                      value: _categoriaSelecionada,
+                      items: _categorias.map((categoria) {
+                        return DropdownMenuItem<String>(
+                          value: categoria,
+                          child: Text(categoria),
+                        );
+                      }).toList(),
+                      onChanged: (categoria) {
+                        setState(() {
+                          _categoriaSelecionada = categoria;
+                        });
+                      },
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        hintText: 'Selecione a categoria',
+                      ),
                     ),
                     const SizedBox(height: 20.0),
                     const SizedBox(
@@ -227,6 +311,16 @@ class _AdicionarObjetivosState extends State<AdicionarObjetivos> {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 20.0),
+                    const Text(
+                      'Objetivos Registados:',
+                      style: TextStyle(
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 87, 124, 89),
+                      ),
+                    ),
+                    _buildObjetivosList(),
                   ],
                 ),
               ),

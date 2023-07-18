@@ -1,9 +1,67 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
 
 class Ajuda extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController questionController = TextEditingController();
+
+  Future<void> enviarEmail(BuildContext context) async {
+    final String email = emailController.text;
+    final String question = questionController.text;
+
+    final smtpServer = gmail('pdiprojeto1@gmail.com', 'projetopdi1');
+
+    final message = Message()
+      ..from = Address(emailController.text)
+      ..recipients.add('pdiprojeto1@gmail.com')
+      ..subject = 'Nova questão'
+      ..text = 'Email: $email\nQuestão: $question';
+
+    try {
+      final sendReport = await send(message, smtpServer);
+
+      emailController.clear();
+      questionController.clear();
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Sucesso'),
+            content: const Text('Questão enviada com sucesso!'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (error) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Erro'),
+            content: Text('Ocorreu um erro ao enviar a questão: $error'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,54 +159,7 @@ class Ajuda extends StatelessWidget {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      final String email = emailController.text;
-                      final String question = questionController.text;
-
-                      FirebaseFirestore.instance.collection('questoes').add({
-                        'email': email,
-                        'question': question,
-                      }).then((_) {
-                        emailController.clear();
-                        questionController.clear();
-
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Sucesso'),
-                              content:
-                                  const Text('Questão enviada com sucesso!'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      }).catchError((error) {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Erro'),
-                              content: Text(
-                                  'Ocorreu um erro ao enviar a questão: $error'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Text('OK'),
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      });
+                      enviarEmail(context);
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color.fromARGB(255, 189, 220, 154),

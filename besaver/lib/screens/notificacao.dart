@@ -1,4 +1,4 @@
-import 'package:besaver/utils/constants.dart';
+/*import 'package:besaver/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class Notificacoes extends StatefulWidget {
@@ -116,3 +116,4 @@ class _NotificacoesState extends State<Notificacoes> {
     );
   }
 }
+*/

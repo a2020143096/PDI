@@ -1,5 +1,6 @@
 import 'package:besaver/screens/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -21,34 +22,147 @@ class RegistoState extends State<Registo> {
   final TextEditingController _controllerConfirmPassword =
       TextEditingController();
 
+  void showNomeHint() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Info'),
+          content: const Text('Insira o seu nome de utilizador'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Fechar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showPasswordHint() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Info'),
+          content: const Text('A password deve ter pelo menos 6 caracteres.'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Fechar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void showEmailHint() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Info'),
+          content: const Text(
+              'Certifique-se de que o email está no formato correto (exemplo: nome@exemplo.com).'),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('Fechar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Future<void> createUserWithEmailAndPassword() async {
+    final String name = _controllerName.text;
+    final String email = _controllerEmail.text;
+    final String password = _controllerPassword.text;
+    final String confirmPassword = _controllerConfirmPassword.text;
+
+    if (password != confirmPassword) {
+      setState(() {
+        errorMessage = 'As palavras-passe não coincidem.';
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage ?? 'As palavras-passe não coincidem.'),
+        ),
+      );
+      return;
+    }
+
+    if (!EmailValidator.validate(email)) {
+      setState(() {
+        errorMessage = 'O email fornecido não é válido.';
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage ?? 'O email fornecido não é válido.'),
+        ),
+      );
+      return;
+    }
+
     try {
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
-        email: _controllerEmail.text,
-        password: _controllerPassword.text,
+        email: email,
+        password: password,
       );
 
       String userId = userCredential.user!.uid;
 
-      // Associar o usuário ao documento na Firestore usando o ID do usuário
       await FirebaseFirestore.instance
           .collection('utilizador')
           .doc(userId)
           .set({
-        'nome': _controllerName.text,
-        'email': _controllerEmail.text,
-        'password': _controllerPassword.text, // Salva a senha no Firestore
+        'nome': name,
+        'email': email,
+        'password': password,
       });
 
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'weak-password') {
+        setState(() {
+          errorMessage = 'A palavra-passe é muito fraca.';
+        });
+      } else if (e.code == 'email-already-in-use') {
+        setState(() {
+          errorMessage = 'O email já está a ser utilizado.';
+        });
+      } else {
+        setState(() {
+          errorMessage = 'Ocorreu um erro durante o registo.';
+        });
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage ?? 'Ocorreu um erro durante o registo.'),
+        ),
+      );
     } catch (e) {
       setState(() {
-        errorMessage = e.toString();
+        errorMessage = 'Ocorreu um erro durante o registo.';
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage ?? 'Ocorreu um erro durante o registo.'),
+        ),
+      );
     }
   }
 
@@ -69,6 +183,33 @@ class RegistoState extends State<Registo> {
         });
       },
       child: const Text('Fazer registo'),
+    );
+  }
+
+  Widget _nomeHintButton() {
+    return IconButton(
+      icon: const Icon(Icons.help_outline),
+      onPressed: () {
+        showNomeHint();
+      },
+    );
+  }
+
+  Widget _passwordHintButton() {
+    return IconButton(
+      icon: const Icon(Icons.help_outline),
+      onPressed: () {
+        showPasswordHint();
+      },
+    );
+  }
+
+  Widget _emailHintButton() {
+    return IconButton(
+      icon: const Icon(Icons.help_outline),
+      onPressed: () {
+        showEmailHint();
+      },
     );
   }
 
@@ -132,13 +273,19 @@ class RegistoState extends State<Registo> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 10),
-                  const Text(
-                    'Nome Completo',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17,
-                      color: Colors.black,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Nome Completo',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          color: Colors.black,
+                        ),
+                      ),
+                      _nomeHintButton(),
+                    ],
                   ),
                   const SizedBox(height: 10),
                   Container(
@@ -165,13 +312,19 @@ class RegistoState extends State<Registo> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 10),
-                  const Text(
-                    'Email',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17,
-                      color: Colors.black,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Email',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          color: Colors.black,
+                        ),
+                      ),
+                      _emailHintButton(),
+                    ],
                   ),
                   const SizedBox(height: 10),
                   Container(
@@ -198,13 +351,19 @@ class RegistoState extends State<Registo> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 10),
-                  const Text(
-                    'Password',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 17,
-                      color: Colors.black,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Password',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 17,
+                          color: Colors.black,
+                        ),
+                      ),
+                      _passwordHintButton(),
+                    ],
                   ),
                   const SizedBox(height: 10),
                   Container(
@@ -215,7 +374,7 @@ class RegistoState extends State<Registo> {
                     ),
                     child: TextFormField(
                       controller: _controllerPassword,
-                      obscureText: true, // Torna a senha oculta
+                      obscureText: true,
                       decoration: const InputDecoration(
                         border: InputBorder.none,
                         hintText: 'Password',
@@ -225,7 +384,42 @@ class RegistoState extends State<Registo> {
                 ],
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 20),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              padding: const EdgeInsets.only(left: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 10),
+                  const Text(
+                    'Confirmar Password',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 17,
+                      color: Colors.black,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 237, 236, 236),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextFormField(
+                      controller: _controllerConfirmPassword,
+                      obscureText: true,
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Confirmar Password',
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(10),

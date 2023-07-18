@@ -25,10 +25,11 @@ class Perfil extends StatelessWidget {
     if (heading == "Meus Dados") {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => MeusDados()));
-    } else if (heading == "Notificações") {
+    } /*else if (heading == "Notificações") {
       Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const Notificacoes()));
-    } else if (heading == "Ajuda") {
+          MaterialPageRoute(builder: (context) => const ()));
+    } */
+    else if (heading == "Ajuda") {
       Navigator.push(context, MaterialPageRoute(builder: (context) => Ajuda()));
     } else if (heading == "Terminar sessão") {
       _firebaseAuth.signOut().then((_) {
@@ -171,7 +172,7 @@ class Perfil extends StatelessWidget {
                       const SizedBox(
                         height: 32.0,
                       ),
-                      GestureDetector(
+                      /*GestureDetector(
                         onTap: () => _Cliques(context, "Notificações"),
                         child: const ProfileAccountInfoTile(
                           iconUrl: "assets/icons/notification.png",
@@ -180,7 +181,7 @@ class Perfil extends StatelessWidget {
                       ),
                       const SizedBox(
                         height: 32.0,
-                      ),
+                      ),*/
                       GestureDetector(
                         onTap: () => _Cliques(context, "Ajuda"),
                         child: const ProfileAccountInfoTile(

@@ -14,6 +14,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   TextEditingController _nomeController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
       setState(() {
         _nomeController.text = userData['nome'];
         _emailController.text = userData['email'];
+        _passwordController.text = userData['password'];
       });
     } catch (error) {
       print('Erro ao carregar dados do utilizador: $error');
@@ -43,6 +45,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
       String? userId = _firebaseAuth.currentUser?.uid;
       final newData = {
         'nome': _nomeController.text,
+        'password': _passwordController.text,
       };
 
       await FirebaseFirestore.instance
@@ -64,6 +67,7 @@ class _EditarPerfilState extends State<EditarPerfil> {
   void dispose() {
     _nomeController.dispose();
     _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
@@ -187,6 +191,8 @@ class _EditarPerfilState extends State<EditarPerfil> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: TextFormField(
+                        controller: _passwordController,
+                        obscureText: true,
                         decoration: const InputDecoration(
                           border: InputBorder.none,
                           hintText: 'Password',

@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -49,66 +50,69 @@ class EstatisticaState extends State<Estatistica> {
   @override
   void initState() {
     super.initState();
-    loadCategorias();
-    loadDespesas();
-    loadRendimentos();
+    loadData();
   }
 
-  void loadCategorias() async {
-    final snapshot =
-        await FirebaseFirestore.instance.collection('categorias').get();
+  void loadData() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    User? currentUser = auth.currentUser;
 
-    setState(() {
-      categorias = snapshot.docs
-          .map((doc) => Categoria(doc['nome'], doc['userId']))
-          .toList();
-    });
-  }
+    if (currentUser != null) {
+      String userId = currentUser.uid;
 
-  void loadDespesas() async {
-    final snapshot =
-        await FirebaseFirestore.instance.collection('despesas').get();
+      final categoriasSnapshot = await FirebaseFirestore.instance
+          .collection('categorias')
+          .where('userId', isEqualTo: userId)
+          .get();
 
-    setState(() {
-      despesas = snapshot.docs.map((doc) {
-        final categoriaId = doc['categoria'];
-        final categoria = categorias.firstWhere(
-          (cat) => cat.userId == categoriaId,
-          orElse: () => Categoria('', ''),
-        );
+      final despesasSnapshot = await FirebaseFirestore.instance
+          .collection('despesas')
+          .where('userId', isEqualTo: userId)
+          .get();
 
-        return Despesa(
-          categoria,
-          doc['descricao'],
-          doc['fixa'],
-          doc['userId'],
-          doc['valor'],
-        );
-      }).toList();
-    });
-  }
+      final rendimentosSnapshot = await FirebaseFirestore.instance
+          .collection('rendimentos')
+          .where('userId', isEqualTo: userId)
+          .get();
 
-  void loadRendimentos() async {
-    final snapshot =
-        await FirebaseFirestore.instance.collection('rendimentos').get();
+      setState(() {
+        categorias = categoriasSnapshot.docs
+            .map((doc) => Categoria(doc['nome'], doc['userId']))
+            .toList();
 
-    setState(() {
-      rendimentos = snapshot.docs.map((doc) {
-        final categoriaId = doc['categoria'];
-        final categoria = categorias.firstWhere(
-          (cat) => cat.userId == categoriaId,
-          orElse: () => Categoria('', ''),
-        );
+        despesas = despesasSnapshot.docs.map((doc) {
+          final categoriaId = doc['categoria'];
+          final categoria = categorias.firstWhere(
+            (cat) => cat.userId == categoriaId,
+            orElse: () => Categoria('', ''),
+          );
 
-        return Rendimento(
-          categoria,
-          doc['descricao'],
-          doc['fixa'],
-          doc['userId'],
-          doc['valor'],
-        );
-      }).toList();
-    });
+          return Despesa(
+            categoria,
+            doc['descricao'],
+            doc['fixa'],
+            doc['userId'],
+            doc['valor'],
+          );
+        }).toList();
+
+        rendimentos = rendimentosSnapshot.docs.map((doc) {
+          final categoriaId = doc['categoria'];
+          final categoria = categorias.firstWhere(
+            (cat) => cat.userId == categoriaId,
+            orElse: () => Categoria('', ''),
+          );
+
+          return Rendimento(
+            categoria,
+            doc['descricao'],
+            doc['fixa'],
+            doc['userId'],
+            doc['valor'],
+          );
+        }).toList();
+      });
+    }
   }
 
   Widget GraficoDespesas() {
@@ -130,13 +134,6 @@ class EstatisticaState extends State<Estatistica> {
       aspectRatio: 1.3,
       child: Column(
         children: [
-          /*Text(
-            'Despesas',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),*/
           Expanded(
             child: PieChart(
               PieChartData(
@@ -185,13 +182,6 @@ class EstatisticaState extends State<Estatistica> {
       aspectRatio: 1.3,
       child: Column(
         children: [
-          /*Text(
-            'Rendimentos',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),*/
           Expanded(
             child: PieChart(
               PieChartData(

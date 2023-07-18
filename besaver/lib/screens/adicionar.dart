@@ -67,7 +67,7 @@ class Adicionar extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 24.0),
               ),
               child: const Text(
-                "Objetivo Poupança",
+                "Máximo de despesa",
                 style: TextStyle(fontSize: 24.0),
               ),
             ),

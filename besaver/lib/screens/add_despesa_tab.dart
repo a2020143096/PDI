@@ -57,12 +57,61 @@ class _AdicionarDespesasState extends State<AdicionarDespesas> {
         valorString != null &&
         descricao != null &&
         uid != null) {
-      final double valor = double.parse(valorString); // Converter para double
+      final double valor = double.parse(valorString);
       final String collectionName =
           selectedTipo == 'Rendimento' ? 'rendimentos' : 'despesas';
+
+      // Se for uma despesa, consultar o limite de gastos da categoria selecionada
+      if (selectedTipo == 'Despesa') {
+        final limiteSnapshot = await _firestore
+            .collection('objetivo')
+            .where('categoria', isEqualTo: selectedCategoria)
+            .where('userId', isEqualTo: uid)
+            .limit(1)
+            .get();
+
+        if (limiteSnapshot.docs.isNotEmpty) {
+          final limiteData = limiteSnapshot.docs.first.data();
+          final double limiteGastos = limiteData['valorMaximo'] as double;
+
+          // Consultar o valor total gasto na categoria até o momento
+          final despesasSnapshot = await _firestore
+              .collection('despesas')
+              .where('categoria', isEqualTo: selectedCategoria)
+              .where('userId', isEqualTo: uid)
+              .get();
+
+          double totalGasto = 0;
+          for (final doc in despesasSnapshot.docs) {
+            totalGasto += doc.get('valor') as double;
+          }
+
+          // Verificar se o valor total gasto excede o limite
+          if (totalGasto + valor > limiteGastos) {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Limite de gastos excedido'),
+                  content: const Text(
+                      'O valor da despesa excede o limite de gastos da categoria selecionada.'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('OK'),
+                    ),
+                  ],
+                );
+              },
+            );
+            return; // Não prosseguir com a adição da despesa
+          }
+        }
+      }
+
       await _firestore.collection(collectionName).add({
         'categoria': selectedCategoria,
-        'valor': valor, // Armazenar o valor numérico
+        'valor': valor,
         'descricao': descricao,
         'fixa': isFixa,
         'userId': uid,

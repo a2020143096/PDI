@@ -18,6 +18,41 @@ class LoginState extends State<Login> {
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerPassword = TextEditingController();
 
+  Future<void> resetPassword() async {
+    final String email = _controllerEmail.text;
+
+    if (!EmailValidator.validate(email)) {
+      setState(() {
+        errorMessage = 'O email fornecido não é válido.';
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage ?? 'Ocorreu um erro durante o login.'),
+        ),
+      );
+      return;
+    }
+
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Email de redefinição de senha enviado.'),
+        ),
+      );
+    } catch (e) {
+      setState(() {
+        errorMessage =
+            'Ocorreu um erro ao enviar o email de redefinição de senha.';
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(errorMessage ?? 'Ocorreu um erro durante o login.'),
+        ),
+      );
+    }
+  }
+
   Future<void> signInWithEmailAndPassword() async {
     final String email = _controllerEmail.text;
     final String password = _controllerPassword.text;
@@ -224,13 +259,12 @@ class LoginState extends State<Login> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const Text(
-                        'Não tens conta? Regista-te!',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                        ),
-                      ),
+                      TextButton(
+                          onPressed: resetPassword,
+                          child: const Text(
+                            'Esqueceu-se da palavra-passe?',
+                            style: TextStyle(fontSize: 16, color: Colors.black),
+                          ))
                     ],
                   ),
                 ),
