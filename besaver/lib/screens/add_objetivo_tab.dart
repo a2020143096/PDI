@@ -123,7 +123,10 @@ class _AdicionarObjetivosState extends State<AdicionarObjetivos> {
 
   Widget _buildObjetivosList() {
     return StreamBuilder<QuerySnapshot>(
-      stream: _firestore.collection('objetivo').snapshots(),
+      stream: _firestore
+          .collection('objetivo')
+          .where('userId', isEqualTo: _auth.currentUser?.uid)
+          .snapshots(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
           return const CircularProgressIndicator();
